@@ -1,0 +1,27 @@
+CC = clang
+ROOT = `{realpath "$PWD/.."}
+DEBUG_FLAGS = -g -O0
+CFLAGS = $DEBUG_FLAGS \
+				-Wall -Werror -Wextra -Wpedantic \
+				"-I$ROOT/include/"
+LDFLAGS =
+BINARY = a.out
+
+run:V: $BINARY
+	"./$BINARY"
+
+<|cat $DEPFILES /dev/null
+
+$BINARY: main.o
+	$CC $CFLAGS $LDFLAGS \
+		$prereq -o $target
+
+%.o: $ROOT/%.c
+	$CC $CFLAGS \
+		-MT $target -MMD -MP -MF $stem.d \
+		-c $prereq -o $target
+
+clean:V:
+	rm -f *.o *.d "$BINARY"
+
+# vim: ft=make
