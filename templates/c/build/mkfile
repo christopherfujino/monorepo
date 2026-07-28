@@ -1,27 +1,39 @@
 CC = clang
+AR = llvm-ar
+PROJECT = fooboo
 ROOT = `{realpath "$PWD/.."}
 DEBUG_FLAGS = -g -O0
 CFLAGS = $DEBUG_FLAGS \
 				-Wall -Werror -Wextra -Wpedantic \
-				"-I$ROOT/include/"
+				-I$ROOT/include
 LDFLAGS =
-BINARY = a.out
+DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
+LIB_OUT = $ROOT/build/lib
 
-run:V: $BINARY
-	"./$BINARY"
+run:V: $PROJECT
+	"./$PROJECT"
 
 <|cat $DEPFILES /dev/null
 
-$BINARY: main.o
+$PROJECT: main.o lib$PROJECT.a
 	$CC $CFLAGS $LDFLAGS \
 		$prereq -o $target
 
-%.o: $ROOT/%.c
+lib$PROJECT.a: $LIB_OUT/mod1.o
+	$AR rcs $target $prereq
+
+%.o: $ROOT/bin/%.c
 	$CC $CFLAGS \
 		-MT $target -MMD -MP -MF $stem.d \
-		-c $prereq -o $target
+		-c $ROOT/bin/$stem.c -o $target
+
+$LIB_OUT/%.o: $ROOT/lib/%.c
+	mkdir -p "$LIB_OUT"
+	$CC $CFLAGS \
+		-MT $target -MMD -MP -MF $stem.d \
+		-c $ROOT/lib/$stem.c -o $target
 
 clean:V:
-	rm -f *.o *.d "$BINARY"
+	rm -rf *.o *.d "$PROJECT" "$LIB_OUT"
 
 # vim: ft=make

@@ -1,0 +1,31 @@
+CC = clang
+ROOT = `{realpath "$PWD/.."}
+DEBUG_FLAGS = -g -O0
+CFLAGS = $DEBUG_FLAGS \
+         -Wall -Werror -Wextra -Wpedantic \
+         -I$ROOT
+LDFLAGS = -lncurses
+DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
+BINARY = a.out
+
+# Phony
+run:V: $BINARY
+	"./$BINARY"
+
+<|cat $DEPFILES /dev/null
+
+# Link
+$BINARY: main.o
+	$CC $CFLAGS $LDFLAGS \
+		$prereq -o $target
+
+# Compile
+%.o: $ROOT/%.c
+	$CC $CFLAGS \
+		-MT $target -MMD -MP -MF $stem.d \
+		-c $prereq -o $target
+
+clean:V:
+	rm -f *.o *.d "$BINARY"
+
+# vim: ft=make
