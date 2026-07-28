@@ -1,0 +1,4 @@
+[submodule "3p/editline"]
+  path = 3p/editline
+  branch = master
+  url = git@github.com:troglobit/editline.git

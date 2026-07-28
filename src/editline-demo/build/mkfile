@@ -1,0 +1,32 @@
+CC = clang
+AR = llvm-ar
+PROJECT = editline-test
+ROOT = `{realpath "$PWD/.."}
+EDITLINE = `{realpath "$PWD/../../../3p/editline"}
+DEBUG_FLAGS = -g -O0
+CFLAGS = $DEBUG_FLAGS \
+				-Wall -Werror -Wextra -Wpedantic \
+				-I$ROOT/include -I$EDITLINE/include
+LDFLAGS =
+DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
+
+# Run
+run:V: $PROJECT
+	"./$PROJECT"
+
+<|cat $DEPFILES /dev/null
+
+# Link
+$PROJECT: main.o $EDITLINE/src/.libs/libeditline.a
+	$CC $CFLAGS $LDFLAGS \
+		$prereq -o $target
+
+%.o: $ROOT/bin/%.c
+	$CC $CFLAGS \
+		-MT $target -MMD -MP -MF $stem.d \
+		-c $ROOT/bin/$stem.c -o $target
+
+clean:V:
+	rm -rf *.o *.d "$PROJECT"
+
+# vim: ft=make

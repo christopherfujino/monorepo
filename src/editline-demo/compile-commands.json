@@ -1,0 +1,21 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-g",
+      "-O0",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-I/home/chris/git/monorepo/src/editline-demo/include,/home/chris/git/monorepo/src/editline-demo/../../3p/editline/src",
+      "-c",
+      "-o",
+      "main.o",
+      "/home/chris/git/monorepo/src/editline-demo/bin/main.c"
+    ],
+    "directory": "/home/chris/git/monorepo/src/editline-demo/build",
+    "file": "/home/chris/git/monorepo/src/editline-demo/bin/main.c",
+    "output": "/home/chris/git/monorepo/src/editline-demo/build/main.o"
+  }
+]
