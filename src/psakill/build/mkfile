@@ -16,7 +16,7 @@ run:V: $BINARY
 
 # Link
 $BINARY: main.o
-	$CC $CFLAGS $LDFLAGS \
+	$CC $LDFLAGS \
 		$prereq -o $target
 
 # Compile

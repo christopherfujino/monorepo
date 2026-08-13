@@ -23,15 +23,14 @@ void render(void) {
 int main(void) {
   // render();
   int pipefd[2];
-  int pipe_read = pipefd[0];
-  int pipe_write = pipefd[1];
   {
-    int result = pipe(pipefd);
-    if (result != 0) {
+    if (pipe(pipefd) != 0) {
       perror("pipe(2) failed!");
       exit(1);
     }
   }
+  int pipe_read = pipefd[0];
+  int pipe_write = pipefd[1];
   pid_t pid = fork();
   if (pid == -1) {
     perror("fork(2) failed!");
@@ -39,7 +38,14 @@ int main(void) {
   }
   if (pid == 0) {
     close(pipe_read);
-    dup2(pipe_write, STDOUT_FILENO);
+    int fd = dup2(pipe_write, STDOUT_FILENO);
+    if (fd == -1) {
+      char msg[BUFSIZ];
+      snprintf(msg, BUFSIZ - 1, "Failure calling dup2(%d, %d)", pipe_write,
+               STDOUT_FILENO);
+      perror(msg);
+      abort();
+    }
     // BSD options, a means all procs with a tty
     execlp("ps", "a", "--format", "pid,command", NULL);
     perror("execlp(3) failed!");
@@ -49,17 +55,17 @@ int main(void) {
   // Parent
   close(pipe_write);
 
-  char buf[BUFSIZ];
+  size_t bufsize = 0;
+  char *buffer = NULL;
   FILE *file_read = fdopen(pipe_read, "r");
   int i = 1;
-  while(1) {
-    printf("&buf = %p\n", (void *)&buf);
-    ssize_t n = getline((char **)&buf, BUFSIZ, file_read);
+  while (1) {
+    ssize_t n = getline(&buffer, &bufsize, file_read);
     if (n == -1) {
-      fprintf(stderr, "TODO: handle -1\n");
-      exit(1);
+      fprintf(stderr, "EOF or error!\n");
+      break;
     }
-    printf("[%d]\tGOT: %s", i++, buf);
+    printf("[%3d] %s", i++, buffer);
   }
 
   pid_t res = waitpid(pid, NULL, 0x0);
@@ -67,4 +73,5 @@ int main(void) {
     perror("waitpid(2) failed!");
     exit(1);
   }
+  printf("Parent done.\n");
 }
