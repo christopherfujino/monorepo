@@ -1,5 +1,7 @@
-#include "mod1.h"
+#include "editor.h"
 
-int mod1(void) {
-  return 42;
+Editor editor_new(void) {
+  return (Editor){
+      .buffer = nullptr,
+  };
 }

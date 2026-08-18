@@ -3,6 +3,7 @@ AR = llvm-ar
 PROJECT = txt
 DEBUG_FLAGS = -g -O0
 CFLAGS = $DEBUG_FLAGS \
+				-std=c23 \
 				-Wall -Werror -Wextra -Wpedantic \
 				-I$PWD/include
 LDFLAGS =

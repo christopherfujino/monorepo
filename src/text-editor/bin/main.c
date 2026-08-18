@@ -1,9 +1,11 @@
-#include <stdio.h>
+#include "editor.h"
 
-#include "mod1.h"
+int main(int argc, char **argv) {
+  Editor e = editor_new();
 
-int main(void) {
-  printf("The answer is %d.\n", mod1());
+  if (e.buffer != nullptr) {
+    // TODO: do something interesting
+  }
 
   return 0;
 }

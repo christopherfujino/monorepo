@@ -11,4 +11,4 @@ lib$PROJECT.a: mod1.o
     -c $stem.c -o $target
 
 clean:V:
-  rm -rf *.a *.o
+  rm -rf *.a *.o *.d
