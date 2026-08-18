@@ -12,6 +12,7 @@ a.out
 # clangd will generate this
 .cache/
 
+# clang-generated depfile
 *.d
 
 # this generates hard-coded paths
