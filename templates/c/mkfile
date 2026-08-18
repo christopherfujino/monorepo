@@ -1,0 +1,34 @@
+CC = clang
+AR = llvm-ar
+PROJECT = flooboo
+DEBUG_FLAGS = -g -O0
+CFLAGS = $DEBUG_FLAGS \
+				-Wall -Werror -Wextra -Wpedantic \
+				-I$PWD/include
+LDFLAGS =
+DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
+
+run:V: $PROJECT.exe
+	"./${PROJECT}.exe"
+
+<|cat $DEPFILES /dev/null
+
+$PROJECT.exe: bin/main.o lib/lib$PROJECT.a
+	$CC $CFLAGS $LDFLAGS \
+		$prereq -o $target
+
+bin/%.o:V:
+	cd bin && mk $stem.o
+
+lib/%.o:V:
+	cd lib && mk $stem.o
+
+lib/%.a:V:
+	cd lib && mk $stem.a
+
+clean:V:
+	rm -rf *.o *.d "$PROJECT" "$LIB_OUT"
+	(cd lib && mk clean)
+	(cd bin && mk clean)
+
+# vim: ft=make
