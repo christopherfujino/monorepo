@@ -20,14 +20,11 @@ $PROJECT.exe: bin/main.o lib/lib$PROJECT.a
 bin/%.o:V:
 	cd bin && mk $stem.o
 
-lib/%.o:V:
-	cd lib && mk $stem.o
-
 lib/%.a:V:
 	cd lib && mk $stem.a
 
 clean:V:
-	rm -rf *.o *.d "$PROJECT" "$LIB_OUT"
+	rm -rf *.o *.d "$PROJECT" "$LIB_OUT" compile_commands.json
 	(cd lib && mk clean)
 	(cd bin && mk clean)
 
