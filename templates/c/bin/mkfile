@@ -10,4 +10,4 @@ DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
     -c $stem.c -o $target
 
 clean:V:
-  rm -f *.o
+  rm -f *.d *.o

@@ -2,8 +2,7 @@ DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
 
 <|cat $DEPFILES /dev/null
 
-lib$PROJECT.a: mod1.o
-	$AR rcs $target $prereq
+# TODO this could be sourced from a template
 
 %.o: %.c
   $CC $CFLAGS \
@@ -11,4 +10,4 @@ lib$PROJECT.a: mod1.o
     -c $stem.c -o $target
 
 clean:V:
-  rm -rf *.d *.a *.o
+  rm -f *.o *.d

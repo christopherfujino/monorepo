@@ -1,19 +1,19 @@
 CC = clang
 AR = llvm-ar
-PROJECT = flooboo
+PROJECT = c23
 DEBUG_FLAGS = -g -O0
 CFLAGS = $DEBUG_FLAGS \
+				-std=c23 \
 				-Wall -Werror -Wextra -Wpedantic \
 				-I$PWD/include
 LDFLAGS =
 DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
 
-run:V: $PROJECT.exe
-	"./${PROJECT}.exe"
+all:V: enum.exe
 
 <|cat $DEPFILES /dev/null
 
-$PROJECT.exe: bin/main.o lib/lib$PROJECT.a
+%.exe: bin/%.o lib/lib$PROJECT.a
 	$CC $CFLAGS $LDFLAGS \
 		$prereq -o $target
 
