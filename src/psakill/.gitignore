@@ -1,4 +1,6 @@
 *.o
+*.so
+*.a
 
 # macOS debug symbols
 *.dSYM
@@ -9,6 +11,9 @@ a.out
 
 # clangd will generate this
 .cache/
+
+# clang-generated depfile
+*.d
 
 # this generates hard-coded paths
 compile_commands.json

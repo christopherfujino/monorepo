@@ -1,13 +1,14 @@
 CC = clang
+# Without POSIX, fdopen not included
 C_VERSION = gnu99
 AR = llvm-ar
-PROJECT = flooboo
+PROJECT = psakill
 DEBUG_FLAGS = -g -O0
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
 				-Wall -Werror -Wextra -Wpedantic \
-				-I$PWD/include
-LDFLAGS =
+				-I$PWD
+LDFLAGS = -lcurses
 DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
 
 run:V: $PROJECT.exe
@@ -15,19 +16,16 @@ run:V: $PROJECT.exe
 
 <|cat $DEPFILES /dev/null
 
-$PROJECT.exe: bin/main.o lib/lib$PROJECT.a
+$PROJECT.exe: main.o
 	$CC $CFLAGS $LDFLAGS \
 		$prereq -o $target
 
-bin/%.o:V:
-	cd bin && mk $stem.o
-
-lib/%.a:V:
-	cd lib && mk $stem.a
+%.o: %.c
+  $CC $CFLAGS \
+    -MT $target -MMD -MP -MF $stem.d \
+    -c $stem.c -o $target
 
 clean:V:
 	rm -rf *.exe *.o *.a *.d compile_commands.json
-	(cd lib && mk clean)
-	(cd bin && mk clean)
 
 # vim: ft=make
