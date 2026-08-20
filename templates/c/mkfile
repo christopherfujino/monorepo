@@ -24,7 +24,7 @@ lib/%.a:V:
 	cd lib && mk $stem.a
 
 clean:V:
-	rm -rf *.exe *.o *.d compile_commands.json
+	rm -rf *.exe *.o *.a *.d compile_commands.json
 	(cd lib && mk clean)
 	(cd bin && mk clean)
 
