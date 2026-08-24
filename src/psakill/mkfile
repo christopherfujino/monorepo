@@ -1,6 +1,6 @@
 CC = clang
 # Without POSIX, fdopen not included
-C_VERSION = gnu99
+C_VERSION = gnu23
 AR = llvm-ar
 PROJECT = psakill
 DEBUG_FLAGS = -g -O0
@@ -11,14 +11,11 @@ CFLAGS = $DEBUG_FLAGS \
 LDFLAGS = -lcurses
 DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
 
-run:V: $PROJECT.exe
-	"./${PROJECT}.exe"
-
-<|cat $DEPFILES /dev/null
-
-$PROJECT.exe: main.o
+$PROJECT.exe: main.o parse.o
 	$CC $CFLAGS $LDFLAGS \
 		$prereq -o $target
+
+<|cat $DEPFILES /dev/null
 
 %.o: %.c
   $CC $CFLAGS \

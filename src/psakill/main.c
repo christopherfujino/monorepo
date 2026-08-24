@@ -3,6 +3,8 @@
 #include <sys/wait.h> // waitpid()
 #include <unistd.h>   // dup2(), fork()
 
+#include "parse.h"
+
 void render(void) {
   initscr();
   addstr("Hello, ");
@@ -56,16 +58,34 @@ int main(void) {
   close(pipe_write);
 
   size_t bufsize = 0;
-  char *buffer = NULL;
+  char *buffer = nullptr;
   FILE *file_read = fdopen(pipe_read, "r");
-  int i = 1;
+  size_t lines_len = 0;
+  size_t lines_cap = 8;
+  ParsedLine *lines = malloc((sizeof(ParsedLine)) * lines_cap);
   while (1) {
     ssize_t n = getline(&buffer, &bufsize, file_read);
     if (n == -1) {
+      // TODO differentiate
       fprintf(stderr, "EOF or error!\n");
       break;
     }
-    printf("[%3d] %s", i++, buffer);
+    ParsedLine currentLine = handleLine(buffer);
+    if (currentLine.pid == 0) {
+      // This was the header
+      continue;
+    }
+
+    if (lines_len == lines_cap) {
+      lines_cap *= 2;
+      lines = realloc(lines, lines_cap);
+      if (lines == nullptr) {
+        perror("realloc() failed");
+        abort();
+      }
+    }
+    lines[lines_len] = currentLine;
+    lines_len++;
   }
 
   pid_t res = waitpid(pid, NULL, 0x0);
@@ -73,5 +93,11 @@ int main(void) {
     perror("waitpid(2) failed!");
     exit(1);
   }
-  printf("Parent done.\n");
+
+  for (size_t i = 0; i < lines_len; i++) {
+    auto line = lines[i];
+
+    printf("%d\t%s\n", line.pid, line.cmd);
+  }
+  // TODO recursively free `lines`
 }
