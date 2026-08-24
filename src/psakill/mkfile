@@ -11,11 +11,17 @@ CFLAGS = $DEBUG_FLAGS \
 LDFLAGS = -lcurses
 DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
 
+all:V: $PROJECT.exe compile_commands.json
+
 $PROJECT.exe: main.o parse.o
 	$CC $CFLAGS $LDFLAGS \
 		$prereq -o $target
 
 <|cat $DEPFILES /dev/null
+
+compile_commands.json: mkfile
+	mk clean
+	bear -- mk "${PROJECT}.exe"
 
 %.o: %.c
   $CC $CFLAGS \

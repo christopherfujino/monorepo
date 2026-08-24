@@ -1,6 +1,5 @@
 #include "parse.h"
 
-#include <stdio.h>  // printf()
 #include <stdlib.h> // abort(), atoi()
 #include <string.h> // strncmp()
 
