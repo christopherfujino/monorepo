@@ -1,0 +1,19 @@
+CC = clang
+AR = llvm-ar
+
+all:V: works.exe broken.exe
+
+works.exe: main.o lib.a
+  clang main.o lib.a -o works.exe
+
+broken.exe: main.o lib.a
+  clang lib.a main.o -o broken.exe
+
+lib.a: lib.o
+  $AR rcs $target $prereq
+
+lib.o: lib.c
+  $CC -c $prereq -o $target
+
+main.o: main.c
+  $CC -c $prereq -o $target
