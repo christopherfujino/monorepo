@@ -16,7 +16,6 @@ DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
 run:V: $PROJECT.exe compile_commands.json
 	"./${PROJECT}.exe"
-	echo "DEPFILES = ${DEPFILES}"
 
 # Must not depend on compile_commands.json
 all:V: $PROJECT.exe
@@ -31,7 +30,7 @@ $PROJECT.exe: bin/main.o lib/lib$PROJECT.a $RAYLIB_LIBRARY
 $RAYLIB_LIBRARY:
 	set -euo pipefail
 	cd "$RAYLIB_ROOT/.." # 3p root
-	mkfile raylib.stamp
+	mk raylib.stamp
 
 bin/%.o: bin/%.c
 	$CC $CFLAGS \
