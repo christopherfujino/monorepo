@@ -1,0 +1,58 @@
+CC = clang
+C_VERSION = gnu23
+AR = llvm-ar
+PROJECT = farm-sim
+DEBUG_FLAGS = -g -O0
+RAYLIB_ROOT = `{realpath "$PWD/../../3p/raylib"}
+RAYLIB_BUILD = $RAYLIB_ROOT/build
+RAYLIB_INCLUDE = $RAYLIB_BUILD/raylib/include
+RAYLIB_LIBRARY = $RAYLIB_BUILD/raylib/libraylib.a
+CFLAGS = $DEBUG_FLAGS \
+				-std=$C_VERSION \
+				-Wall -Werror -Wextra -Wpedantic \
+				-I$PWD/include -I$RAYLIB_INCLUDE
+LDFLAGS = -lm -lX11
+DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
+
+run:V: $PROJECT.exe compile_commands.json
+	"./${PROJECT}.exe"
+	echo "DEPFILES = ${DEPFILES}"
+
+# Must not depend on compile_commands.json
+all:V: $PROJECT.exe
+
+<|cat $DEPFILES /dev/null
+
+$PROJECT.exe: bin/main.o lib/lib$PROJECT.a $RAYLIB_LIBRARY
+	$CC $LDFLAGS \
+		-o $target \
+		$prereq
+
+$RAYLIB_LIBRARY:
+	set -euo pipefail
+	cd "$RAYLIB_ROOT/.." # 3p root
+	mkfile raylib.stamp
+
+bin/%.o: bin/%.c
+	$CC $CFLAGS \
+		-MT $target -MMD -MP -MF bin/$stem.d \
+		-c bin/$stem.c -o $target
+
+lib/lib$PROJECT.a: lib/mod1.o
+	$AR rcs $target $prereq
+
+lib/%.o: lib/%.c
+	$CC $CFLAGS \
+		-MT $target -MMD -MP -MF lib/$stem.d \
+		-c lib/$stem.c -o $target
+
+compile_commands.json: mkfile
+	mk clean
+	bear -- mk all
+
+clean:V:
+	rm -rf *.exe *.d *.o *.a compile_commands.json
+	(cd bin && rm -f *.d *.o *.a)
+	(cd lib && rm -f *.d *.o *.a)
+
+# vim: ft=make

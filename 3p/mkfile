@@ -1,0 +1,10 @@
+all:V: raylib.stamp
+
+raylib.stamp:
+  set -euo pipefail
+  cd raylib
+    mkdir -p build/ && cd build/
+    cmake ..
+    cmake --build .
+  cd ../.. # //3p
+  date > $target

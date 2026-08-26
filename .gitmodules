@@ -2,3 +2,6 @@
   path = 3p/editline
   branch = master
   url = git@github.com:troglobit/editline.git
+[submodule "3p/raylib"]
+	path = 3p/raylib
+	url = git@github.com:raysan5/raylib.git
