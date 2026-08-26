@@ -16,8 +16,7 @@ run:V: $PROJECT.exe
 <|cat $DEPFILES /dev/null
 
 $PROJECT.exe: bin/main.o lib/lib$PROJECT.a
-	$CC $CFLAGS $LDFLAGS \
-		$prereq -o $target
+	$CC $LDFLAGS $prereq -o $target
 
 bin/%.o: bin/%.c
 	$CC $CFLAGS \
