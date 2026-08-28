@@ -10,15 +10,8 @@ import (
 	"golang.org/x/net/html"
 )
 
-func write(w io.Writer, first string, cb func(), second string) {
-	_, err := w.Write([]byte(first + "\n"))
-	if err != nil {
-		panic(err)
-	}
-
-	cb()
-
-	_, err = w.Write([]byte(second + "\n"))
+func write(w io.Writer, contents string) {
+	_, err := w.Write([]byte(contents + "\n"))
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +23,7 @@ func main() {
 		panic("Usage")
 	}
 	url := args[0]
-	fmt.Printf("Getting %s...", url)
+	fmt.Printf("GET %s", url)
 	res, err := http.Get(url)
 	fmt.Println("")
 	if err != nil {
@@ -41,22 +34,45 @@ func main() {
 		panic(fmt.Sprintf("Bad response code: %d", res.StatusCode))
 	}
 
-	root := parse(res.Body)
+	roots := parse(res.Body)
 	buffer := bytes.NewBuffer([]byte{})
-	write(buffer, `<html>
+	write(buffer, fmt.Sprintf(`
+<!DOCTYPE html>
+<html lang="en">
 	<head>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css" type="text/css">
-	</head>
-	<body>`, func() {
-		html.Render(buffer, root)
-	}, `
-	</body>
+		<link rel="stylesheet" href="style.css" />
+		<title>%s</title>
+	</head>`, roots.Title))
+	html.Render(buffer, roots.Body)
+	write(buffer, `
 </html>`)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		_, err := w.Write(buffer.Bytes())
-		if err != nil {
-			panic(err)
+		switch r.URL.String() {
+		case "/":
+			fallthrough
+		case "/index.html":
+			_, err := w.Write(buffer.Bytes())
+			if err != nil {
+				panic(err)
+			}
+		case "/style.css":
+			w.Header().Set("Content-Type", "text/css")
+			css, err := os.Open("style.css")
+			if err != nil {
+				panic(err)
+			}
+			_, err = io.Copy(w, css)
+			if err != nil {
+				panic(err)
+			}
+			err = css.Close()
+			if err != nil {
+				panic(err)
+			}
+		default:
+			http.Error(w, "Flooboo", 404)
+			fmt.Fprintf(os.Stderr, "404 %s\n", r.URL.String())
 		}
 	})
 

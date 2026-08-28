@@ -4,11 +4,42 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 
 	"golang.org/x/net/html"
 )
 
 type Parser struct{}
+
+var dataPattern *regexp.Regexp = nil
+
+func pruneAttributes(input []html.Attribute) []html.Attribute {
+	if dataPattern == nil {
+		var err error
+		dataPattern, err = regexp.Compile("^data-")
+		if err != nil {
+			panic(err)
+		}
+	}
+	var out []html.Attribute
+	for _, attr := range input {
+		if dataPattern.Match([]byte(attr.Key)) {
+			continue
+		}
+		if attr.Key == "style" {
+			continue
+		}
+		//if attr.Key == "class" {
+		//	continue
+		//}
+		//if attr.Key == "id" {
+		//	continue
+		//}
+		//fmt.Printf("%s\n", attr.Key)
+		out = append(out, attr)
+	}
+	return out
+}
 
 func (p Parser) clone(node, parent, prevSibling *html.Node) *html.Node {
 	var firstChild, lastChild *html.Node
@@ -20,6 +51,7 @@ func (p Parser) clone(node, parent, prevSibling *html.Node) *html.Node {
 		lastChild = children[len(children)-1]
 	}
 
+	var attributes = pruneAttributes(node.Attr)
 	return &html.Node{
 		Parent:      parent,
 		FirstChild:  firstChild,
@@ -30,7 +62,7 @@ func (p Parser) clone(node, parent, prevSibling *html.Node) *html.Node {
 		DataAtom:  node.DataAtom,
 		Data:      node.Data,
 		Namespace: node.Namespace,
-		Attr:      node.Attr, // safe to share
+		Attr:      attributes,
 	}
 }
 
@@ -41,6 +73,10 @@ func (p *Parser) parseChildren(node *html.Node) []*html.Node {
 	for child := range node.ChildNodes() {
 		prev = cur
 		cur = p.parseNode(child, node, prev)
+		if cur == nil {
+			cur = prev
+			continue
+		}
 		childClones = append(childClones, cur)
 		if prev != nil {
 			prev.NextSibling = cur
@@ -56,6 +92,8 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 	case "button":
 		fallthrough
 	case "figcaption":
+		fallthrough
+	case "footer":
 		fallthrough
 	case "header":
 		fallthrough
@@ -138,21 +176,48 @@ func (p *Parser) parseNode(node, parent, prevSibling *html.Node) *html.Node {
 	}
 }
 
-func findMain(node *html.Node) *html.Node {
-	for cur := range node.Descendants() {
-		if cur.Type == html.ElementNode && cur.DataAtom.String() == "main" {
-			return cur
-		}
-	}
-	panic("\"main\" not found!")
+type Roots struct {
+	Title string
+	Body *html.Node
 }
 
-func parse(reader io.Reader) *html.Node {
+func findRoots(node *html.Node) Roots {
+	var roots Roots
+	for cur := range node.Descendants() {
+		var eitherSet = false
+		atomString := cur.DataAtom.String()
+		if cur.Type == html.ElementNode && atomString == "body" {
+			roots.Body = cur
+			eitherSet = true
+		} else if cur.Type == html.ElementNode && atomString == "title" {
+			for child := range cur.ChildNodes() {
+				if child.Type == html.TextNode {
+					roots.Title = child.Data
+					break
+				}
+			}
+			if roots.Title == "" {
+				panic("Huh?")
+			}
+			eitherSet = true
+		}
+		if eitherSet && roots.Body != nil && roots.Title != "" {
+			return roots
+		}
+	}
+	if roots.Body == nil {
+		panic("\"body\" not found!")
+	}
+	return roots
+}
+
+func parse(reader io.Reader) Roots {
 	root, err := html.Parse(reader)
 	if err != nil {
 		panic(err)
 	}
-	main := findMain(root)
+	roots := findRoots(root)
 	var p Parser
-	return p.parseNode(main, nil, nil)
+	roots.Body = p.parseNode(roots.Body, nil, nil)
+	return roots
 }
