@@ -1,6 +1,10 @@
+/* base16-unikitty-light */
+
 body {
-  font-family: sans;
-  margin: 1rem 3rem 1rem;
+  font-family: "sans";
+  margin: 1rem 5rem 1rem;
+  background-color: #ffffff;
+  color: #6c696e;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -8,5 +12,5 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 a {
-  color: #05D;
+  color: #4f4b51;
 }
