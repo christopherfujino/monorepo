@@ -89,6 +89,8 @@ func (p *Parser) parseChildren(node *html.Node) []*html.Node {
 func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 	switch node.DataAtom.String() {
 	// skip
+	case "aside":
+		fallthrough
 	case "button":
 		fallthrough
 	case "figcaption":
@@ -103,13 +105,21 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "img":
 		fallthrough
+	case "link":
+		fallthrough
 	case "script":
+		fallthrough
+	case "style":
 		fallthrough
 	case "svg":
 		return nil
 
 	// recurse into
 	case "a":
+		fallthrough
+	case "article":
+		fallthrough
+	case "b":
 		fallthrough
 	case "br":
 		fallthrough
@@ -133,9 +143,17 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "html":
 		fallthrough
+	case "i":
+		fallthrough
 	case "li":
 		fallthrough
 	case "main":
+		fallthrough
+	case "nav":
+		fallthrough
+	case "noscript": // we prob want this?
+		fallthrough
+	case "ol":
 		fallthrough
 	case "p":
 		fallthrough

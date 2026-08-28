@@ -71,7 +71,7 @@ func main() {
 
 			buffer, err := fetchPage(url)
 			if err != nil {
-				handleError(404, err)
+				handleError(404, fmt.Errorf("Error fetching %s: %s", url, err.Error()))
 				return
 			}
 
