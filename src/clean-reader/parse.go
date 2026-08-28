@@ -95,6 +95,8 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "footer":
 		fallthrough
+	case "form":
+		fallthrough
 	case "header":
 		fallthrough
 	case "head":
