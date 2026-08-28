@@ -8,17 +8,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-var debugRecursionCounter int = 0
-
 type Parser struct{}
 
 func (p Parser) clone(node, parent, prevSibling *html.Node) *html.Node {
-	debugRecursionCounter += 1
-	if debugRecursionCounter > 1000000 {
-		panic("YOLO")
-	}
-	fmt.Printf("%s (%s): %s; %v\n", node.Type.String(), node.DataAtom.String(), node.Data, node.ChildNodes())
-
 	var firstChild, lastChild *html.Node
 	children := p.parseChildren(node)
 	if len(children) >= 1 {
@@ -74,7 +66,6 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 	case "script":
 		fallthrough
 	case "svg":
-		fmt.Println("Early return from ", node.DataAtom.String())
 		return nil
 
 	// recurse into
@@ -115,8 +106,7 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 	case "time":
 		fallthrough
 	case "ul":
-		return p.clone(node, parent, prevSibling)
-
+		fallthrough
 	case "body":
 		return p.clone(node, parent, prevSibling)
 

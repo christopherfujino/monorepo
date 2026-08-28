@@ -53,5 +53,14 @@ func main() {
 	</body>
 </html>`)
 
-	fmt.Println(buffer.String())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write(buffer.Bytes())
+		if err != nil {
+			panic(err)
+		}
+	})
+
+	const addr = "0.0.0.0:8080"
+	fmt.Printf("Listening to connections at %s\n", addr)
+	http.ListenAndServe(addr, nil)
 }
