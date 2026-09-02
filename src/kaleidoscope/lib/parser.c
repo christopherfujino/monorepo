@@ -31,16 +31,16 @@ PrototypeDecl *LogErrorP(const char *msg) {
 
 static int _GetTokenPrecedence() {
   switch (CurTok) {
-    case '<': // TODO: wtf is this?
-      return 10;
-    case '+':
-      return 20;
-    case '-':
-      return 20;
-    case '*':
-      return 40;
-    default:
-      return -1;
+  case '<': // TODO: wtf is this?
+    return 10;
+  case '+':
+    return 20;
+  case '-':
+    return 20;
+  case '*':
+    return 40;
+  default:
+    return -1;
   }
 }
 
@@ -176,6 +176,23 @@ static Expr *_ParseBinOpRHS(int exprPrec, Expr *lhs) {
     }
 
     int nextPrec = _GetTokenPrecedence();
+    if (tokPrec < nextPrec) {
+      rhs = _ParseBinOpRHS(tokPrec + 1, rhs);
+      if (rhs == nullptr) {
+        return nullptr;
+      }
+    }
+    Expr *nextLhs = malloc(sizeof(Expr));
+    *nextLhs = (Expr){
+        .type = expr_type_bin,
+        .of.bin =
+            (BinaryExpr){
+                .lhs = lhs,
+                .rhs = rhs,
+                .op = operation,
+            },
+    };
+    lhs = nextLhs;
   }
 }
 
@@ -186,5 +203,3 @@ static Expr *_ParseExpr() {
   }
   return _ParseBinOpRHS(0, lhs);
 }
-
-
