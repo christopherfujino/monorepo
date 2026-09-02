@@ -11,7 +11,10 @@ static Expr *_ParseExpr(); // proto
 static int CurTok;
 
 static int _consume(enum Token token) {
-  assert(token == CurTok);
+  // TODO make this an assert
+  if (token != CurTok) {
+    abort();
+  }
   // We are peeking ahead at what the lexer hasn't yet lexed.
   return CurTok = gettok();
 }
@@ -24,6 +27,21 @@ Expr *LogError(const char *msg) {
 PrototypeDecl *LogErrorP(const char *msg) {
   LogError(msg);
   return nullptr;
+}
+
+static int _GetTokenPrecedence() {
+  switch (CurTok) {
+    case '<': // TODO: wtf is this?
+      return 10;
+    case '+':
+      return 20;
+    case '-':
+      return 20;
+    case '*':
+      return 40;
+    default:
+      return -1;
+  }
 }
 
 static Expr *_ParseNumExpr() {
@@ -40,7 +58,20 @@ static Expr *_ParseNumExpr() {
   return expr;
 }
 
-// TODO: _ParseParenExpr()
+static Expr *_ParseParenExpr() {
+  _consume('(');
+  Expr *expr = _ParseExpr();
+  if (expr == nullptr) {
+    return expr;
+  }
+
+  if (CurTok != ')') {
+    return LogError("expected ')'");
+  }
+
+  _consume(')');
+  return expr;
+}
 
 static Expr *_ParseIdentifierExpr() {
   size_t n = strlen(IdentifierStr);
@@ -110,3 +141,50 @@ static Expr *_ParseIdentifierExpr() {
 
   return ptr;
 }
+
+/// primary
+///   ::= identifier
+///   ::= number
+///   ::= paren
+static Expr *_ParsePrimary() {
+  switch (CurTok) {
+  case tok_identifier:
+    return _ParseIdentifierExpr();
+  case tok_number:
+    return _ParseNumExpr();
+  case '(':
+    return _ParseParenExpr();
+  default:
+    return LogError("Unknown token when expecting an expression");
+  }
+}
+
+static Expr *_ParseBinOpRHS(int exprPrec, Expr *lhs) {
+  while (true) {
+    int tokPrec = _GetTokenPrecedence();
+    if (tokPrec < exprPrec) {
+      // not a binop
+      return lhs;
+    }
+
+    // parse binop
+    int operation = CurTok;
+    _consume(operation);
+    Expr *rhs = _ParsePrimary();
+    if (rhs == nullptr) {
+      return nullptr;
+    }
+
+    int nextPrec = _GetTokenPrecedence();
+  }
+}
+
+static Expr *_ParseExpr() {
+  Expr *lhs = _ParsePrimary();
+  if (lhs == nullptr) {
+    return nullptr;
+  }
+  return _ParseBinOpRHS(0, lhs);
+}
+
+
