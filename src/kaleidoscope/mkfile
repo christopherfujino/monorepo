@@ -1,14 +1,17 @@
-CC = clang
-C_VERSION = gnu99
+CC = bear --append -- clang
+C_VERSION = c23
 AR = llvm-ar
 PROJECT = flooboo
-DEBUG_FLAGS = -g -O0
+DEBUG_FLAGS = -g -O0 -DNDEBUG
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
 				-Wall -Werror -Wextra -Wpedantic \
 				-I$PWD/include
 LDFLAGS =
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
+LIB_OBJECTS = lib/buffer.o \
+							lib/lexer.o \
+							lib/parser.o
 
 run:V: $PROJECT.exe
 	"./${PROJECT}.exe"
@@ -28,7 +31,7 @@ lib/%.o: lib/%.c
 		-MT $target -MMD -MP -MF lib/$stem.d \
 		-c lib/$stem.c -o $target
 
-lib/lib$PROJECT.a: lib/mod1.o
+lib/lib$PROJECT.a: $LIB_OBJECTS
 	$AR rcs $target $prereq
 
 clean:V:
