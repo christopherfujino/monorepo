@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include "buffer.h"
+#include <assert.h> // assert()
 #include <ctype.h>  // isalpha(), isalnum()
 #include <stdio.h>  // getchar()
 #include <stdlib.h> // strtod()

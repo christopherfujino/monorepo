@@ -11,7 +11,6 @@ static Expr *_ParseExpr(); // proto
 static int CurTok;
 
 static int _consume(enum Token token) {
-  assert(0);
   // `tok_unreachable` means skip the check
   if (token != tok_unreachable && token != CurTok) {
     abort();
@@ -51,8 +50,6 @@ static int _GetTokenPrecedence() {
 }
 
 static Expr *_ParseNumExpr() {
-  assert(0);
-  assert(CurTok == tok_number);
   Expr *expr = malloc(sizeof(Expr));
 
   *expr = (Expr){

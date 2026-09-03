@@ -1,11 +1,10 @@
 CC = bear --append -- clang
-C_VERSION = c23
 AR = llvm-ar
 PROJECT = flooboo
-DEBUG_FLAGS = -g -O0 -DNDEBUG
+DEBUG_FLAGS = -g -O0
 WARNING_FLAGS = -Wall -Werror -Wextra -Wpedantic
 CFLAGS = $DEBUG_FLAGS \
-				-std=$C_VERSION \
+				-std=c23 \
 				$WARNING_FLAGS \
 				-I$PWD/include
 LDFLAGS =
