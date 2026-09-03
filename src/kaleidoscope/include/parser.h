@@ -51,4 +51,6 @@ typedef struct FunctionDecl {
   Expr *body;
 } FunctionDecl;
 
+void MainLoop();
+
 #endif // __SRC_KALEIDOSCOPE_INCLUDE_PARSER_H

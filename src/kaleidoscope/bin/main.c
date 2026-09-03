@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include "parser.h"
 
 int main(void) {
-  printf("");
+  MainLoop();
 
   return 0;
 }

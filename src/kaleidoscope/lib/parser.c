@@ -285,3 +285,42 @@ static Expr *_ParseExpr() {
   }
   return _ParseBinOpRHS(0, lhs);
 }
+
+/// top ::= definition | external | expression | ';'
+void MainLoop() {
+  // prime the first token
+  fprintf(stderr, "read> ");
+  _consume(tok_unreachable);
+  while (true) {
+    fprintf(stderr, "read> ");
+    switch (CurTok) {
+    case tok_eof:
+      return;
+    case ';':
+      _consume(';');
+      break;
+    case tok_def:
+      if (_ParseDefinition()) {
+        fprintf(stderr, "Parsed a function definition.\n");
+      } else {
+        // skip token for error recovery
+        _consume(tok_unreachable);
+      }
+      break;
+    case tok_extern:
+      if (_ParseExtern()) {
+        fprintf(stderr, "Parsed an extern\n");
+      } else {
+        _consume(tok_unreachable);
+      }
+      break;
+    default:
+      if (_ParseTopLevelExpr()) {
+        fprintf(stderr, "Parsed a top-level expr\n");
+      } else {
+        _consume(tok_unreachable);
+      }
+      break;
+    }
+  }
+}
