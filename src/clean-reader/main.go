@@ -26,10 +26,13 @@ func fetchPage(url string) (*bytes.Buffer, error) {
 	}
 
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
-		return nil, fmt.Errorf("Bad response code: %d", res.StatusCode)
+		return nil, fmt.Errorf("Bad response code from %s: %d", url, res.StatusCode)
 	}
 
-	roots := parse(res.Body)
+	roots, err := parse(res.Body)
+	if err != nil {
+		return nil, err
+	}
 	err = res.Body.Close()
 	if err != nil {
 		return nil, err
@@ -49,6 +52,27 @@ func fetchPage(url string) (*bytes.Buffer, error) {
 	return buffer, nil
 }
 
+func serveRemoteArticle(w http.ResponseWriter, r *http.Request, handleError func(int, error)) {
+	queries := r.URL.Query()
+	url := queries.Get("q")
+	if url == "" {
+		handleError(404, fmt.Errorf("no query in: %s\n", r.URL))
+		return
+	}
+
+	buffer, err := fetchPage(url)
+	if err != nil {
+		handleError(404, fmt.Errorf("Error fetching %s: %s", url, err.Error()))
+		return
+	}
+
+	_, err = w.Write(buffer.Bytes())
+	if err != nil {
+		handleError(500, err)
+		return
+	}
+}
+
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		var handleError = func(code int, err error) {
@@ -62,24 +86,7 @@ func main() {
 		case "/":
 			fallthrough
 		case "/index.html":
-			queries := r.URL.Query()
-			url := queries.Get("q")
-			if url == "" {
-				handleError(404, fmt.Errorf("no query in: %s\n", r.URL))
-				return
-			}
-
-			buffer, err := fetchPage(url)
-			if err != nil {
-				handleError(404, fmt.Errorf("Error fetching %s: %s", url, err.Error()))
-				return
-			}
-
-			_, err = w.Write(buffer.Bytes())
-			if err != nil {
-				handleError(500, err)
-				return
-			}
+			serveRemoteArticle(w, r, handleError)
 		case "/style.css":
 			w.Header().Set("Content-Type", "text/css")
 			css, err := os.Open("style.css")

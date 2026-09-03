@@ -9,7 +9,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-type Parser struct{}
+type Parser struct {
+	InvalidTags []string
+}
 
 var dataPattern *regexp.Regexp = nil
 
@@ -103,6 +105,10 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "head":
 		fallthrough
+	case "iframe":
+		fallthrough
+	case "input":
+		fallthrough
 	case "img":
 		fallthrough
 	case "link":
@@ -121,9 +127,21 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "b":
 		fallthrough
+	case "blockquote":
+		fallthrough
 	case "br":
 		fallthrough
+	case "code":
+		fallthrough
+	case "details":
+		fallthrough
 	case "div":
+		fallthrough
+	case "dd":
+		fallthrough
+	case "dl":
+		fallthrough
+	case "dt":
 		fallthrough
 	case "em":
 		fallthrough
@@ -141,9 +159,13 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "h6":
 		fallthrough
+	case "hr":
+		fallthrough
 	case "html":
 		fallthrough
 	case "i":
+		fallthrough
+	case "label":
 		fallthrough
 	case "li":
 		fallthrough
@@ -157,9 +179,13 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 		fallthrough
 	case "p":
 		fallthrough
+	case "pre":
+		fallthrough
 	case "span":
 		fallthrough
 	case "strong":
+		fallthrough
+	case "summary":
 		fallthrough
 	case "time":
 		fallthrough
@@ -172,9 +198,9 @@ func (p *Parser) parseElement(node, parent, prevSibling *html.Node) *html.Node {
 	default:
 		// TODO panic
 		fmt.Fprintf(os.Stderr, "Unimplemented ElementNode type (%s): %s\n", node.DataAtom.String(), node.Data)
-		os.Exit(1)
+		p.InvalidTags = append(p.InvalidTags, node.DataAtom.String())
+		return p.clone(node, parent, prevSibling)
 	}
-	panic("unreachable")
 }
 
 func (p *Parser) parseNode(node, parent, prevSibling *html.Node) *html.Node {
@@ -198,7 +224,7 @@ func (p *Parser) parseNode(node, parent, prevSibling *html.Node) *html.Node {
 
 type Roots struct {
 	Title string
-	Body *html.Node
+	Body  *html.Node
 }
 
 func findRoots(node *html.Node) Roots {
@@ -231,7 +257,7 @@ func findRoots(node *html.Node) Roots {
 	return roots
 }
 
-func parse(reader io.Reader) Roots {
+func parse(reader io.Reader) (*Roots, error) {
 	root, err := html.Parse(reader)
 	if err != nil {
 		panic(err)
@@ -239,5 +265,10 @@ func parse(reader io.Reader) Roots {
 	roots := findRoots(root)
 	var p Parser
 	roots.Body = p.parseNode(roots.Body, nil, nil)
-	return roots
+	if len(p.InvalidTags) > 0 {
+		fmt.Fprintf(os.Stderr, "The following tags not yet implemented:\n\t%v", p.InvalidTags)
+
+		return nil, fmt.Errorf("Yolo")
+	}
+	return &roots, nil
 }

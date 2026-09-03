@@ -1,16 +1,26 @@
-/* base16-unikitty-light */
-
 body {
-  font-family: "sans";
-  margin: 1rem 5rem 1rem;
-  background-color: #ffffff;
-  color: #6c696e;
+  font-family: serif;
+  margin: 1rem auto 1rem;
+  max-width: 50rem;
+  background-color: #f0f0df;
+  color: #000;
+  font-size: 20px;
+}
+
+code {
+  font-family: monospace;
+  font-size: 18px;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 a {
-  color: #4f4b51;
+  color: #dd4020;
+  text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline
 }
