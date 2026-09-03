@@ -3,9 +3,10 @@ C_VERSION = c23
 AR = llvm-ar
 PROJECT = flooboo
 DEBUG_FLAGS = -g -O0 -DNDEBUG
+WARNING_FLAGS = -Wall -Werror -Wextra -Wpedantic
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
-				-Wall -Werror -Wextra -Wpedantic \
+				$WARNING_FLAGS \
 				-I$PWD/include
 LDFLAGS =
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}

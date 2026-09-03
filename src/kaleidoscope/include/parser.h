@@ -40,26 +40,15 @@ typedef struct Expr {
   } of;
 } Expr;
 
-typedef struct PrototypeDecl {
+typedef struct Prototype {
   char *name;
   size_t args_len;
   char **args;
-} PrototypeDecl;
+} Prototype;
 
 typedef struct FunctionDecl {
-  PrototypeDecl *proto;
+  Prototype *proto;
   Expr *body;
 } FunctionDecl;
-
-typedef struct Decl {
-  enum {
-    decl_type_proto,
-    decl_type_func,
-  } type;
-  union {
-    PrototypeDecl proto;
-    FunctionDecl func;
-  } of;
-} Decl;
 
 #endif // __SRC_KALEIDOSCOPE_INCLUDE_PARSER_H

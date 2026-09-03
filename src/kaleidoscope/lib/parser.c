@@ -11,21 +11,27 @@ static Expr *_ParseExpr(); // proto
 static int CurTok;
 
 static int _consume(enum Token token) {
-  // TODO make this an assert
-  if (token != CurTok) {
+  assert(0);
+  // `tok_unreachable` means skip the check
+  if (token != tok_unreachable && token != CurTok) {
     abort();
   }
   // We are peeking ahead at what the lexer hasn't yet lexed.
   return CurTok = gettok();
 }
 
-Expr *LogError(const char *msg) {
-  fprintf(stderr, "Error: %s\n", msg);
-  return nullptr;
+static inline char *_strcpy(const char *original) {
+  assert(original != nullptr);
+  size_t n = strlen(original);
+  char *copy = malloc((n + 1) * sizeof(char));
+  if (copy == nullptr) {
+    abort();
+  }
+  return strcpy(copy, original);
 }
 
-PrototypeDecl *LogErrorP(const char *msg) {
-  LogError(msg);
+void *LogError(const char *msg) {
+  fprintf(stderr, "Error: %s\n", msg);
   return nullptr;
 }
 
@@ -74,12 +80,7 @@ static Expr *_ParseParenExpr() {
 }
 
 static Expr *_ParseIdentifierExpr() {
-  size_t n = strlen(IdentifierStr);
-  char *id = malloc((n + 1) * sizeof(char));
-  if (id == nullptr) {
-    abort();
-  }
-  strcpy(id, IdentifierStr);
+  char *id = _strcpy(IdentifierStr);
 
   _consume(tok_identifier); // consume id
 
@@ -194,6 +195,87 @@ static Expr *_ParseBinOpRHS(int exprPrec, Expr *lhs) {
     };
     lhs = nextLhs;
   }
+}
+
+/// prototype ::= id '(' id* ')'
+static Prototype *_ParsePrototype() {
+  char *funcName = _strcpy(IdentifierStr);
+  _consume(tok_identifier);
+
+  if (CurTok != '(') {
+    return LogError("Expected '(' in prototype");
+  }
+
+  // read argument names
+  size_t argLen = 0;
+  char **argNames = nullptr;
+  while (_consume(tok_unreachable) == tok_identifier) {
+    argNames = realloc(argNames, argLen + 1);
+    if (argNames == nullptr) {
+      abort();
+    }
+    argNames[argLen] = _strcpy(IdentifierStr);
+    argLen += 1;
+  }
+
+  if (CurTok != ')') {
+    return LogError("Expected ')' in prototype");
+  }
+
+  _consume(')');
+
+  Prototype *proto = malloc(sizeof(Prototype));
+  *proto = (Prototype){
+      .name = funcName,
+      .args_len = argLen,
+      .args = argNames,
+  };
+  return proto;
+}
+
+/// definition ::= 'def' prototype expression
+static FunctionDecl *_ParseDefinition() {
+  _consume(tok_def);
+  Prototype *proto = _ParsePrototype();
+  if (proto == nullptr) {
+    return nullptr;
+  }
+  Expr *expr = _ParseExpr();
+  if (expr == nullptr) {
+    free(proto);
+    return nullptr;
+  }
+  FunctionDecl *fun = malloc(sizeof(FunctionDecl));
+  *fun = (FunctionDecl){
+      .proto = proto,
+      .body = expr,
+  };
+  return fun;
+}
+
+/// external ::= 'extern' prototype
+static Prototype *_ParseExtern() {
+  _consume(tok_extern);
+  return _ParsePrototype();
+}
+
+/// toplevelexpr ::= expression
+///
+/// These are for the REPL
+static FunctionDecl *_ParseTopLevelExpr() {
+  Expr *expr = _ParseExpr();
+  if (expr == nullptr) {
+    return nullptr;
+  }
+
+  Prototype *proto = malloc(sizeof(Prototype));
+  *proto = (Prototype){.name = "__anon_expr"};
+  FunctionDecl *fun = malloc(sizeof(FunctionDecl));
+  *fun = (FunctionDecl){
+      .proto = proto,
+      .body = expr,
+  };
+  return fun;
 }
 
 static Expr *_ParseExpr() {
