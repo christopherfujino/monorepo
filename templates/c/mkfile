@@ -1,4 +1,4 @@
-CC = clang
+CC = bear --apend -- clang
 C_VERSION = gnu99
 AR = llvm-ar
 PROJECT = flooboo
