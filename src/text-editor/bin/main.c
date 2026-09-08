@@ -1,6 +1,6 @@
 #include "editor.h"
 
-int main(int argc, char **argv) {
+int main() {
   Editor e = editor_new();
 
   if (e.buffer != nullptr) {
