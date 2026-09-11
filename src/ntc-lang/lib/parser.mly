@@ -4,13 +4,15 @@
 %}
 
 (* Declarations *)
+%token <int> INT
 %token EOF
 
-%start <unit> prog
+%start <expr> prog
 
 %%
 
 (* Rules *)
 
 prog:
-  | EOF { () }
+  | i = INT { Int i }
+  | EOF { Null }
