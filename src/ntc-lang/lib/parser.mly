@@ -16,7 +16,7 @@
 
 prog:
   | e = expr EOF { e }
-  | EOF { Null }
+  | EOF { Unit }
 
 expr:
   | e1 = expr; op = PLUS; e2 = expr { Binary (Plus, e1, e2) }
