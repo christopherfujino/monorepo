@@ -1,0 +1,9 @@
+(library
+ (name ntc_lang))
+
+(menhir
+  (modules parser)
+  (flags
+    --exn-carries-state))
+
+(ocamllex lexer)

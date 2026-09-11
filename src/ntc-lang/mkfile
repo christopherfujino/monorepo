@@ -1,0 +1,4 @@
+PROJECT = ntc-lang
+
+run:V:
+  dune exec "$PROJECT"

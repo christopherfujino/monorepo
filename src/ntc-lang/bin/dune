@@ -1,0 +1,4 @@
+(executable
+ (public_name ntc-lang)
+ (name main)
+ (libraries ntc_lang))

@@ -1,0 +1,31 @@
+(lang dune 3.22)
+
+(name ntc-lang)
+(using menhir 3.0)
+
+(generate_opam_files true)
+
+(source
+ (github username/reponame))
+
+(authors "Author Name <author@example.com>")
+
+(maintainers "Maintainer Name <maintainer@example.com>")
+
+(license LICENSE)
+
+(documentation https://url/to/documentation)
+
+(package
+ (name ntc-lang)
+ (synopsis "A short synopsis")
+ (description "A longer description")
+ (depends
+   dune
+   ; Dynarray module requires 5.2.0
+   (ocaml (and (>= 5.4.0) (< 5.5.0)))
+ )
+ (tags
+  ("add topics" "to describe" your project)))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
