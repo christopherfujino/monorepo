@@ -3,11 +3,10 @@
 
 (menhir
   (modules parser)
+  (explain true)
   ; --strict means fail on conflicts
   (flags
     --exn-carries-state
-    --strict
-    --explain
-    ))
+    --strict))
 
 (ocamllex lexer)
