@@ -10,6 +10,9 @@
 
 %start <expr> prog
 
+(* These are ordered from high to low precedence *)
+%left PLUS
+
 %%
 
 (* Rules *)
