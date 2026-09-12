@@ -315,6 +315,7 @@ void MainLoop() {
       if (_ParseTopLevelExpr()) {
         fprintf(stderr, "Parsed a top-level expr\n");
       } else {
+        fprintf(stderr, "Error...\n");
         _consume(tok_unreachable);
       }
       break;

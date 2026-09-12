@@ -1,4 +1,5 @@
 CC = bear --append -- clang
+CXX = bear --append -- clang++
 AR = llvm-ar
 PROJECT = flooboo
 DEBUG_FLAGS = -g -O0
@@ -7,11 +8,16 @@ CFLAGS = $DEBUG_FLAGS \
 				-std=c23 \
 				$WARNING_FLAGS \
 				-I$PWD/include
-LDFLAGS =
+CXXFLAGS = $DEBUG_FLAGS \
+					 $WARNING_FLAGS \
+					 -std=c++17 \
+					 -I$PWD/include
+LDFLAGS = `{llvm-config --ldflags --libs}
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 LIB_OBJECTS = lib/buffer.o \
 							lib/lexer.o \
-							lib/parser.o
+							lib/parser.o \
+							lib/codegen.o
 
 run:V: $PROJECT.exe
 	"./${PROJECT}.exe"
@@ -30,6 +36,11 @@ lib/%.o: lib/%.c
 	$CC $CFLAGS \
 		-MT $target -MMD -MP -MF lib/$stem.d \
 		-c lib/$stem.c -o $target
+
+lib/%.o: lib/%.cpp
+	$CXX $CXXFLAGS \
+		-MT $target -MMD -MP -MF lib/$stem.d \
+		-c lib/$stem.cpp -o $target
 
 lib/lib$PROJECT.a: $LIB_OBJECTS
 	$AR rcs $target $prereq
