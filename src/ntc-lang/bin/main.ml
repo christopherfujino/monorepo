@@ -1,4 +1,5 @@
 let rec main () =
+  Printf.printf "> %!";
   match In_channel.input_line In_channel.stdin with
   | None -> print_endline "EOF"
   | Some line ->

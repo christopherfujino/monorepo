@@ -11,6 +11,9 @@ let int = '-'? lone_digit digit*
 rule read = parse
   | white { (read [@tailcall]) lexbuf }
   | '+' { PLUS }
+  | '-' { MINUS }
+  | '*' { PRODUCT }
+  | '/' { DIVIDE }
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   (* eof is ocamllex built-in *)
   | eof { EOF }

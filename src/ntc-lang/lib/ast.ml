@@ -1,4 +1,8 @@
-type operator = Plus
+type operator =
+  | Plus
+  | Minus
+  | Product
+  | Divide
 
 and expr =
   (* TODO *)
@@ -6,7 +10,11 @@ and expr =
   | Binary of operator * expr * expr
   | Unit
 
-let op_to_s = function Plus -> "+"
+let op_to_s = function
+  | Plus -> "+"
+  | Minus -> "-"
+  | Product -> "*"
+  | Divide -> "/"
 
 let rec to_s = function
   | Int i -> Printf.sprintf "Int(%d)" i
