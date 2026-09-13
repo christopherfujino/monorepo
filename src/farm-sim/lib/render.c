@@ -12,28 +12,40 @@ ScreenHandle init() {
   return (ScreenHandle){};
 }
 
-void render(ScreenHandle) {
-  Rectangle avatar = {
+// TODO: embed in ScreenHandle?
+static Rectangle avatar = {
     .x = 5,
     .y = 5,
     .width = 25,
     .height = 25,
-  };
-  Camera2D camera = (Camera2D){
-      .offset = (Vector2){.x = width / 2.0f, .y = height / 2.0f},
-      .target = (Vector2){.x = 0, .y = 0},
-      .rotation = 0,
-      .zoom = 1,
-  };
+};
 
+static Camera2D camera = (Camera2D){
+    .offset = (Vector2){.x = width / 2.0f, .y = height / 2.0f},
+    .target = (Vector2){.x = 0, .y = 0},
+    .rotation = 0,
+    .zoom = 1,
+};
+
+// TODO move to another module
+static void handleInput() {
+  if (IsKeyDown(KEY_H)) {
+    avatar.x -= 1;
+  }
+  if (IsKeyDown(KEY_L)) {
+    avatar.x += 1;
+  }
+}
+
+void render(ScreenHandle) {
   while (!WindowShouldClose()) {
+    handleInput();
     BeginDrawing();
     {
       ClearBackground(white);
 
       BeginMode2D(camera);
       {
-        DrawGrid(30, 5.0f);
         DrawRectangleRec(avatar, green);
       }
       EndMode2D();
