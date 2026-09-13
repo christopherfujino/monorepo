@@ -1,4 +1,4 @@
-CC = clang
+CC = bear --append -- clang
 C_VERSION = gnu23
 AR = llvm-ar
 PROJECT = farm-sim
@@ -14,11 +14,8 @@ CFLAGS = $DEBUG_FLAGS \
 LDFLAGS = -lm -lX11
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
-run:V: $PROJECT.exe compile_commands.json
+run:V: $PROJECT.exe
 	"./${PROJECT}.exe"
-
-# Must not depend on compile_commands.json
-all:V: $PROJECT.exe
 
 <|cat $DEPFILES /dev/null
 
@@ -37,17 +34,13 @@ bin/%.o: bin/%.c
 		-MT $target -MMD -MP -MF bin/$stem.d \
 		-c bin/$stem.c -o $target
 
-lib/lib$PROJECT.a: lib/mod1.o
+lib/lib$PROJECT.a: lib/render.o
 	$AR rcs $target $prereq
 
 lib/%.o: lib/%.c
 	$CC $CFLAGS \
 		-MT $target -MMD -MP -MF lib/$stem.d \
 		-c lib/$stem.c -o $target
-
-compile_commands.json: mkfile
-	mk clean
-	bear -- mk all
 
 clean:V:
 	rm -rf *.exe *.d *.o *.a compile_commands.json

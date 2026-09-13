@@ -1,6 +1,7 @@
-// #include "mod1.h"
-// #include <stdio.h>
+#include "render.h"
 
-int main(void) {
-  return 0;
+int main() {
+  auto handle = init();
+  render(handle);
+  return 42;
 }
