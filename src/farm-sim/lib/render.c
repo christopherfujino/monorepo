@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "raylib.h"
 #include "render.h"
+#include "state.h"
 
 static void print(const char *format, ...) {
   constexpr size_t buflen = 100;
@@ -17,58 +18,8 @@ static void print(const char *format, ...) {
   va_end(args);
 }
 
-struct _gameState {
-  int fps;
-  Camera2D camera;
-  Rectangle avatar;
-  Texture2D mapTexture;
-  Rectangle mapRect;
-};
-
-GameState gameStateInit() {
-  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Flooboo");
-  GameState state = malloc(sizeof(struct _gameState));
-  {
-    auto mapImage =
-        GenImagePerlinNoise(SCREEN_WIDTH, SCREEN_HEIGHT, 40, 40, 2.0);
-    state->mapTexture = LoadTextureFromImage(mapImage);
-    UnloadImage(mapImage);
-    state->mapRect = (Rectangle){
-        .x = 0,
-        .y = 0,
-        .width = WORLD_WIDTH,
-        .height = WORLD_HEIGHT,
-    };
-  }
-  state->fps = FPS;
-  SetTargetFPS(state->fps);
-  state->camera = (Camera2D){
-      .offset =
-          (Vector2){
-              .x = SCREEN_WIDTH / 2.0f,
-              .y = SCREEN_HEIGHT / 2.0f,
-          },
-      .target = (Vector2){.x = 0, .y = 0},
-      .rotation = 0,
-      .zoom = 2,
-  };
-  state->avatar = (Rectangle){
-      .x = 5,
-      .y = 5,
-      .width = 25,
-      .height = 25,
-  };
-
-  return state;
-}
-
-void gameStateDispose(GameState state) {
-  UnloadTexture(state->mapTexture);
-  free(state);
-}
-
 // TODO move to another module
-static void handleInput(GameState state) {
+static void handleInput(GameState *state) {
   if (IsKeyDown(KEY_H)) {
     state->avatar.x -= AVATAR_SPEED / state->fps;
     if (state->avatar.x < 0) {
@@ -97,7 +48,7 @@ static void handleInput(GameState state) {
   state->camera.target.y = state->avatar.y;
 }
 
-void render(GameState state) {
+void render(GameState *state) {
   while (!WindowShouldClose()) {
     handleInput(state);
     BeginDrawing();

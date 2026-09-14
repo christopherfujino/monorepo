@@ -34,7 +34,7 @@ bin/%.o: bin/%.c
 		-MT $target -MMD -MP -MF bin/$stem.d \
 		-c bin/$stem.c -o $target
 
-lib/lib$PROJECT.a: lib/render.o
+lib/lib$PROJECT.a: lib/render.o lib/state.o
 	$AR rcs $target $prereq
 
 lib/%.o: lib/%.c
