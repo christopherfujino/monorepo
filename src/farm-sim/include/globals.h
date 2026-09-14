@@ -1,0 +1,10 @@
+#ifndef __MONOREPO_SRC_FARM_SIM_INCLUDE_GLOBALS_H
+#define __MONOREPO_SRC_FARM_SIM_INCLUDE_GLOBALS_H
+
+constexpr int SCREEN_HEIGHT = 600;
+constexpr int SCREEN_WIDTH = 800;
+
+// pixels per second
+constexpr float AVATAR_SPEED = 200;
+
+#endif // __MONOREPO_SRC_FARM_SIM_INCLUDE_GLOBALS_H

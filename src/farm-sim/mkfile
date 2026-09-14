@@ -2,7 +2,7 @@ CC = bear --append -- clang
 C_VERSION = gnu23
 AR = llvm-ar
 PROJECT = farm-sim
-DEBUG_FLAGS = -g -O0
+DEBUG_FLAGS = -g -O0 -fsanitize=address
 RAYLIB_ROOT = `{realpath "$PWD/../../3p/raylib"}
 RAYLIB_BUILD = $RAYLIB_ROOT/build
 RAYLIB_INCLUDE = $RAYLIB_BUILD/raylib/include
@@ -11,7 +11,7 @@ CFLAGS = $DEBUG_FLAGS \
 				 -std=$C_VERSION \
 				 -Wall -Werror -Wextra -Wpedantic \
 				 -I$PWD/include -I$RAYLIB_INCLUDE
-LDFLAGS = -lm -lX11
+LDFLAGS = -lm -lX11 -fsanitize=address
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
 run:V: $PROJECT.exe

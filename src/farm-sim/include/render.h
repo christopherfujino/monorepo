@@ -3,8 +3,8 @@
 
 #include "raylib.h"
 
-struct _screenHandle;
-typedef struct _screenHandle* ScreenHandle;
+struct _gameState;
+typedef struct _gameState* GameState;
 
 constexpr Color black = (Color){0, 0, 0, 0xFF};
 constexpr Color white = (Color){0xFF, 0xFF, 0xFF, 0xFF};
@@ -15,10 +15,14 @@ constexpr Color green = (Color){
     .a = 0xFF,
 };
 
-constexpr int height = 600;
-constexpr int width = 800;
+//typedef struct Object {
+//  float x;
+//  float y;
+//  float dx;
+//  float dy;
+//} Object;
 
-void render(ScreenHandle);
-ScreenHandle init();
+void render(GameState);
+GameState init();
 
 #endif // __MONOREPO_SRC_FARMSIM_INCLUDE_RENDER_H
