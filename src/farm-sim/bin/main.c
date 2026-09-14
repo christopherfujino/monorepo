@@ -1,7 +1,8 @@
 #include "render.h"
 
 int main() {
-  auto handle = init();
+  auto handle = gameStateInit();
   render(handle);
+  gameStateDispose(handle);
   return 42;
 }
