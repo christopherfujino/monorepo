@@ -7,6 +7,13 @@
 #include "render.h"
 #include "state.h"
 
+constexpr Color color0 = (Color){0x14, 0x1F, 0x2C, 0xFF};
+// constexpr Color color1 = (Color){0x3A, 0x58, 0x7F, 0xFF};
+// constexpr Color color2 = (Color){0x56, 0x82, 0xBB, 0xFF};
+constexpr Color color3 = (Color){0x70, 0xA9, 0xF3, 0xFF};
+
+constexpr int fontsize = 20;
+
 static void print(const char *format, ...) {
   constexpr size_t buflen = 100;
   va_list args;
@@ -18,55 +25,22 @@ static void print(const char *format, ...) {
   va_end(args);
 }
 
-// TODO move to another module
-static void handleInput(GameState *state) {
-  if (IsKeyDown(KEY_H)) {
-    state->avatar.x -= AVATAR_SPEED / state->fps;
-    if (state->avatar.x < 0) {
-      state->avatar.x = 0;
-    }
-  }
-  if (IsKeyDown(KEY_J)) {
-    state->avatar.y += AVATAR_SPEED / state->fps;
-    if (state->avatar.y > WORLD_HEIGHT - state->avatar.height) {
-      state->avatar.y = WORLD_HEIGHT - state->avatar.height;
-    }
-  }
-  if (IsKeyDown(KEY_K)) {
-    state->avatar.y -= AVATAR_SPEED / state->fps;
-    if (state->avatar.y < 0) {
-      state->avatar.y = 0;
-    }
-  }
-  if (IsKeyDown(KEY_L)) {
-    state->avatar.x += AVATAR_SPEED / state->fps;
-    if (state->avatar.x > WORLD_WIDTH - state->avatar.width) {
-      state->avatar.x = WORLD_WIDTH - state->avatar.width;
-    }
-  }
-  state->camera.target.x = state->avatar.x;
-  state->camera.target.y = state->avatar.y;
-}
-
 void render(GameState *state) {
-  while (!WindowShouldClose()) {
-    handleInput(state);
-    BeginDrawing();
+  BeginDrawing();
+  {
+    ClearBackground(color0);
+
+    BeginMode2D(state->camera);
     {
-      ClearBackground(color0);
-
-      BeginMode2D(state->camera);
-      {
-        DrawTextureRec(state->mapTexture, state->mapRect, (Vector2){0, 0},
-                       color3);
-        DrawRectangleRec(state->avatar, color3);
-      }
-      EndMode2D();
-
-      DrawFPS(SCREEN_WIDTH - 1 - fontsize * 10, SCREEN_HEIGHT - 1 - fontsize * 2);
+      DrawTextureRec(state->mapTexture, state->mapRect, (Vector2){0, 0},
+                     color3);
+      DrawRectangleRec(state->avatar, color3);
     }
-    print("Avatar(%0.1f, %0.1f)\n", state->avatar.x, state->avatar.y);
+    EndMode2D();
 
-    EndDrawing();
+    DrawFPS(SCREEN_WIDTH - 1 - fontsize * 10, SCREEN_HEIGHT - 1 - fontsize * 2);
   }
+  print("Avatar(%0.1f, %0.1f)\n", state->avatar.x, state->avatar.y);
+
+  EndDrawing();
 }

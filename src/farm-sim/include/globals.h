@@ -2,10 +2,10 @@
 #define __MONOREPO_SRC_FARM_SIM_INCLUDE_GLOBALS_H
 
 constexpr int SCREEN_HEIGHT = 900;
-constexpr int WORLD_HEIGHT = SCREEN_HEIGHT;
+constexpr int WORLD_HEIGHT = SCREEN_HEIGHT * 3;
 
 constexpr int SCREEN_WIDTH = 1600;
-constexpr int WORLD_WIDTH = SCREEN_WIDTH;
+constexpr int WORLD_WIDTH = SCREEN_WIDTH * 3;
 
 constexpr int FPS = 60;
 

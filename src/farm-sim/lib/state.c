@@ -7,7 +7,7 @@ GameState *gameStateInit() {
   GameState *state = malloc(sizeof(GameState));
   {
     auto mapImage =
-        GenImagePerlinNoise(SCREEN_WIDTH, SCREEN_HEIGHT, 40, 40, 2.0);
+        GenImagePerlinNoise(WORLD_WIDTH, WORLD_HEIGHT, 5, 40, 100);
     state->mapTexture = LoadTextureFromImage(mapImage);
     UnloadImage(mapImage);
     state->mapRect = (Rectangle){
