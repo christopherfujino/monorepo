@@ -11,7 +11,7 @@ CFLAGS = $DEBUG_FLAGS \
 				 -std=$C_VERSION \
 				 -Wall -Werror -Wextra -Wpedantic \
 				 -I$PWD/include -I$RAYLIB_INCLUDE
-LDFLAGS = -lm -lX11 -fsanitize=address
+LDFLAGS = -lm -lX11 -lpthread -fsanitize=address
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
 run:V: $PROJECT.exe

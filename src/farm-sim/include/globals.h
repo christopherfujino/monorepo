@@ -8,6 +8,7 @@ constexpr int SCREEN_WIDTH = 1600;
 constexpr int WORLD_WIDTH = SCREEN_WIDTH * 3;
 
 constexpr int FPS = 60;
+constexpr int LOADING_FPS = 15;
 
 // pixels per second
 constexpr float AVATAR_SPEED = 350;
