@@ -10,7 +10,7 @@ RAYLIB_LIBRARY = $RAYLIB_BUILD/raylib/libraylib.a
 CFLAGS = $DEBUG_FLAGS \
 				 -std=$C_VERSION \
 				 -Wall -Werror -Wextra -Wpedantic \
-				 -I$PWD/include -I$RAYLIB_INCLUDE
+				 -I$PWD/include -I$PWD/gen -I$RAYLIB_INCLUDE
 LDFLAGS = -lm -lX11 -lpthread -fsanitize=address
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
@@ -20,6 +20,11 @@ run:V: $PROJECT.exe
 <|cat $DEPFILES /dev/null
 
 $PROJECT.exe: bin/main.o lib/lib$PROJECT.a $RAYLIB_LIBRARY
+	$CC $LDFLAGS \
+		-o $target \
+		$prereq
+
+assetgen.exe: bin/assetgen.o $RAYLIB_LIBRARY
 	$CC $LDFLAGS \
 		-o $target \
 		$prereq
@@ -34,7 +39,7 @@ bin/%.o: bin/%.c
 		-MT $target -MMD -MP -MF bin/$stem.d \
 		-c bin/$stem.c -o $target
 
-lib/lib$PROJECT.a: lib/render.o lib/state.o lib/update_state.o
+lib/lib$PROJECT.a: lib/render.o lib/state.o lib/update_state.o lib/map.o
 	$AR rcs $target $prereq
 
 lib/%.o: lib/%.c

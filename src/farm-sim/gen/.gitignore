@@ -1,0 +1,5 @@
+# These can be big, don't check them in for now, rather generate them
+# with `mk autogen.exe && ./autogen.exe`
+*
+
+!.gitignore

@@ -5,6 +5,7 @@
 #include <string.h> // memset(), strcpy()
 
 #include "globals.h"
+#include "map.h"
 #include "render.h"
 #include "state.h"
 
@@ -12,8 +13,16 @@
 static void *_syncLoad(void *voidIsDone) {
   atomic_int *isDone = voidIsDone;
 
-  Image *image = malloc(sizeof(Image));
-  *image = GenImagePerlinNoise(WORLD_WIDTH, WORLD_HEIGHT, 5, 40, 100);
+  Image *image = calloc(1, sizeof(Image));
+  image->data = MapData;
+  if (image->data == nullptr) {
+    atomic_store(isDone, 1);
+    return nullptr;
+  }
+  image->width = MapWidth;
+  image->height = MapHeight;
+  image->format = MapFormat;
+  image->mipmaps = 1;
 
   atomic_store(isDone, 1);
   return image;
@@ -32,8 +41,7 @@ GameState *gameStateInit() {
     abort();
   }
 
-  GameState *state = malloc(sizeof(GameState));
-  memset(state, 0, sizeof(GameState));
+  GameState *state = calloc(1, sizeof(GameState));
   state->fps = FPS;
   if (!renderLoadingScreen(state, &loadDone)) {
     abort();
@@ -53,7 +61,8 @@ GameState *gameStateInit() {
       abort();
     }
 
-    UnloadImage(*image);
+    // Don't unload, memory is static!
+    //UnloadImage(*image);
     free(image);
   }
   state->camera = (Camera2D){
@@ -73,10 +82,14 @@ GameState *gameStateInit() {
     Texture2D texture;
     {
 
-      auto image = GenImageColor(avatarWidth * textureCount, avatarHeight, color0);
-      ImageDrawRectangle(&image, avatarWidth * 1, 0, avatarWidth, avatarHeight, color1);
-      ImageDrawRectangle(&image, avatarWidth * 2, 0, avatarWidth, avatarHeight, color2);
-      ImageDrawRectangle(&image, avatarWidth * 3, 0, avatarWidth, avatarHeight, color3);
+      auto image =
+          GenImageColor(avatarWidth * textureCount, avatarHeight, color0);
+      ImageDrawRectangle(&image, avatarWidth * 1, 0, avatarWidth, avatarHeight,
+                         color1);
+      ImageDrawRectangle(&image, avatarWidth * 2, 0, avatarWidth, avatarHeight,
+                         color2);
+      ImageDrawRectangle(&image, avatarWidth * 3, 0, avatarWidth, avatarHeight,
+                         color3);
       texture = LoadTextureFromImage(image);
       if (!IsTextureValid(texture)) {
         abort();
