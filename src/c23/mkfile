@@ -1,4 +1,4 @@
-CC = clang
+CC = bear --append -- clang
 AR = llvm-ar
 PROJECT = c23
 DEBUG_FLAGS = -g -O0

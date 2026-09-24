@@ -7,13 +7,14 @@ typedef enum Enum : uint8_t {
   Foo,
   Bar,
   Baz,
+
+  EnumCount,
 } Enum;
 
 int main(void) {
-  Enum vals[] = {Foo, Bar, Baz};
+  Enum vals[EnumCount] = {Foo, Bar, Baz};
 
-  size_t len = sizeof(vals);
-  for (size_t i = 0; i < len; i++) {
+  for (size_t i = 0; i < EnumCount; i++) {
     switch (vals[i]) {
       case Foo:
         printf("Foo = %d\n", vals[i]);
