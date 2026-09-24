@@ -6,6 +6,10 @@ typedef struct {
   unsigned char flooboo[1];
 } Job;
 
+/// This structure wastes 1 element of its cap.
+///
+/// To be more efficient would require an additional flag to distinguish
+/// between an empty and a full buffer.
 typedef struct {
   Job *buffer;
   Job *bufferStart;
@@ -26,9 +30,9 @@ static size_t _jobQueueLength(Queue *queue) {
   return pastEnd - queue->bufferStart + queue->bufferNext - queue->buffer;
 }
 
-static Job * _removeFromQueue(Queue *queue) {
+Job *queueRemove(Queue *queue) {
   if (queue->bufferStart == queue->bufferNext) {
-    fprintf(stderr, "Ring buffer is empty!\n");
+    fprintf(stderr, "Ring buffer is empty! (%ld)\n", _jobQueueLength(queue));
     return nullptr;
   }
   Job *current = queue->bufferStart;
@@ -40,7 +44,37 @@ static Job * _removeFromQueue(Queue *queue) {
   return current;
 }
 
+int queueAdd(Queue *queue, Job job) {
+  if (_jobQueueLength(queue) >= (queue->cap - 1)) {
+    fprintf(stderr, "Ring buffer is (almost) full! (%ld)\n",
+            _jobQueueLength(queue));
+    return -1;
+  }
+  *queue->bufferNext = job;
+  queue->bufferNext += 1;
+  if (queue->bufferNext == queue->buffer + queue->cap) {
+    queue->bufferNext = queue->buffer;
+  }
+  return 0;
+}
+
 constexpr size_t CAP = 8;
+
+static inline void _debugQueue(Queue *queue) {
+  for (unsigned int i = 0; i < CAP; i++) {
+    printf(" %d", i);
+  }
+  printf("\tlen = %ld\n", _jobQueueLength(queue));
+  for (unsigned int i = 0; i < CAP; i++) {
+    if (queue->buffer + i == queue->bufferStart ||
+        queue->buffer + i == queue->bufferNext) {
+      printf(" ^");
+    } else {
+      printf("  ");
+    }
+  }
+  printf("\n");
+}
 
 int main(void) {
   Job *buffer = calloc(CAP, sizeof(Job));
@@ -51,19 +85,20 @@ int main(void) {
       .bufferNext = buffer + 1,
   };
   while (1) {
-    for (unsigned int i = 0; i < CAP; i++) {
-      printf(" %d", i);
+    _debugQueue(&queue);
+    auto cur = queueRemove(&queue);
+    if (cur == nullptr) {
+      break;
     }
-    printf("\tlen = %ld\n", _jobQueueLength(&queue));
-    for (unsigned int i = 0; i < CAP; i++) {
-      if (queue.buffer + i == queue.bufferStart || queue.buffer + i == queue.bufferNext) {
-        printf(" ^");
-      } else {
-        printf("  ");
-      }
+    sleep(1);
+  }
+
+  while (1) {
+    _debugQueue(&queue);
+    int ret = queueAdd(&queue, (Job){0});
+    if (ret < 0) {
+      break;
     }
-    printf("\n");
-    _removeFromQueue(&queue);
     sleep(1);
   }
 }
