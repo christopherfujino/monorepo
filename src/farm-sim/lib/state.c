@@ -61,8 +61,7 @@ GameState *gameStateInit() {
       abort();
     }
 
-    // Don't unload, memory is static!
-    //UnloadImage(*image);
+    // Don't UnloadImage(*image), its memory is static!
     free(image);
   }
   state->camera = (Camera2D){
