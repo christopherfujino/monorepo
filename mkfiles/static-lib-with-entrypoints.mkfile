@@ -1,14 +1,14 @@
-CC = clang
-C_VERSION = gnu99
+CC = bear --append -- clang
+C_VERSION = c23
 AR = llvm-ar
-_DUMMY = `{ /usr/bin/bash -c "set -u; $PROJECT" }
-_CHECK = `{sh -c '[ -n "$MY_VAR" ] || { echo "Error: MY_VAR is not set." >&2; exit 1; }'}
-DEBUG_FLAGS = -g -O0
+_CHECK = `{sh -c '[ -n "$PROJECT" ] || { echo "Error: PROJECT is not set." >&2; exit 1; }'}
+DEBUG_FLAGS = -g -O0 $DEBUG_FLAGS
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
 				-Wall -Werror -Wextra -Wpedantic \
-				-I$PWD/include
-LDFLAGS =
+				-I$PWD/include \
+				$CFLAGS
+LDFLAGS = $LDFLAGS
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
 run:V: $PROJECT.exe
@@ -30,8 +30,9 @@ lib/%.o: lib/%.c
 		-MT $target -MMD -MP -MF lib/$stem.d \
 		-c lib/$stem.c -o $target
 
-lib/lib$PROJECT.a: lib/mod1.o
-	$AR rcs $target $prereq
+# Downstream must implement this
+#lib/lib$PROJECT.a: lib/mod1.o
+#	$AR rcs $target $prereq
 
 clean:V:
 	rm -rf *.exe *.d *.o *.a compile_commands.json

@@ -1,0 +1,11 @@
+PROJECT = repo-repl
+<../../mkfiles/static-lib-with-entrypoints.mkfile
+<../../mkfiles/editline.mkfile
+
+# This just adds an additional prereq
+$PROJECT.exe: $EDITLINE_LIB
+
+lib/lib$PROJECT.a: lib/prompt.o $EDITLINE_LIB
+	$AR rcs $target $prereq
+
+# vim: ft=make
