@@ -11,14 +11,13 @@ CFLAGS = $DEBUG_FLAGS \
 LDFLAGS = $LDFLAGS
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
-run:V: $PROJECT.exe
-	echo success
-	#"./${PROJECT}.exe"
+$PROJECT.exe: bin/main.o lib/lib$PROJECT.a
+	$CC $LDFLAGS $prereq -o $target
 
 <|cat $DEPFILES /dev/null
 
-$PROJECT.exe: bin/main.o lib/lib$PROJECT.a
-	$CC $LDFLAGS $prereq -o $target
+run:V: $PROJECT.exe
+	"./${PROJECT}.exe"
 
 bin/%.o: bin/%.c
 	$CC $CFLAGS \
@@ -30,9 +29,9 @@ lib/%.o: lib/%.c
 		-MT $target -MMD -MP -MF lib/$stem.d \
 		-c lib/$stem.c -o $target
 
-# Downstream must implement this
-#lib/lib$PROJECT.a: lib/mod1.o
-#	$AR rcs $target $prereq
+# Downstream must add prereqs
+lib/lib$PROJECT.a:
+	$AR rcs $target $prereq
 
 clean:V:
 	rm -rf *.exe *.d *.o *.a compile_commands.json
