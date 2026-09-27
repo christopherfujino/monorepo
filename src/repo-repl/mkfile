@@ -6,6 +6,5 @@ PROJECT = repo-repl
 $PROJECT.exe: $EDITLINE_LIB
 
 lib/lib$PROJECT.a: lib/prompt.o $EDITLINE_LIB
-	$AR rcs $target $prereq
 
 # vim: ft=make
