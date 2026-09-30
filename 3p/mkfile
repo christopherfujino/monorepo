@@ -3,6 +3,7 @@ all:V: raylib.stamp
 raylib.stamp:
   set -euo pipefail
   cd raylib
+    rm -rf build/
     mkdir -p build/ && cd build/
     cmake ..
     cmake --build .

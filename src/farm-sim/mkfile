@@ -32,7 +32,7 @@ assetgen.exe: bin/assetgen.o $RAYLIB_LIBRARY
 $RAYLIB_LIBRARY:
 	set -euo pipefail
 	cd "$RAYLIB_ROOT/.." # 3p root
-	mk raylib.stamp
+	CFLAGS="" mk raylib.stamp
 
 bin/%.o: bin/%.c
 	$CC $CFLAGS \
