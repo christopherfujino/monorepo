@@ -1,0 +1,26 @@
+#!/usr/bin/env sloth
+
+let arch = do {
+  let archRaw = ('uname -m'&!).stdout.trim()
+  if archRaw == 'x86_64' {
+    'amd64'
+  } else if archRaw.contains('aarch64') {
+    'arm64'
+  } else {
+    throw "I don't know the arch ${ archRaw } is!"
+  }
+}
+
+let os = 'linux'
+let version = '2026-09'
+let localTarball = "odin-${version}.tar.gz"
+let remoteHost = "https://github.com/odin-lang/Odin/releases/download/dev-${version}"
+let cleanDirname = 'odin-lang'
+
+with ($cwd = $scriptDir) {
+  "curl -L ${remoteHost}/odin-${os}-${arch}-dev-${version}.tar.gz -o ${localTarball}"!
+  "tar xvzf ${localTarball}"!
+  "rm ${localTarball}"!
+  let actualDirname = (['sh', '-c', "find -name odin-${os}-${arch}-*"]&!).stdout.trim()
+  ['mv', actualDirname, cleanDirname]!
+}

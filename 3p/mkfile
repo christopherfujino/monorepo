@@ -2,10 +2,19 @@ all:V: raylib.stamp
 
 raylib.stamp:
   set -euo pipefail
+  
   cd raylib
     rm -rf build/
     mkdir -p build/ && cd build/
     cmake ..
     cmake --build .
   cd ../.. # //3p
+  date > $target
+
+odin-lang:
+  ./odin-download-extract.sloth
+
+odin.stamp: odin-lang
+  set -euo pipefail
+  
   date > $target
