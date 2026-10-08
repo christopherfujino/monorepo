@@ -126,4 +126,5 @@ GameState *gameStateInit() {
 void gameStateDispose(GameState *state) {
   UnloadTexture(state->mapTexture);
   free(state);
+  // TODO: CloseWindow()?!
 }

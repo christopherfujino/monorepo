@@ -3,6 +3,8 @@ C_VERSION = gnu23
 AR = llvm-ar
 PROJECT = farm-sim
 DEBUG_FLAGS = -g -O0 -fsanitize=address
+
+# TODO <../../mkfiles/raylib.mkfile
 RAYLIB_ROOT = `{realpath "$PWD/../../3p/raylib"}
 RAYLIB_BUILD = $RAYLIB_ROOT/build
 RAYLIB_INCLUDE = $RAYLIB_BUILD/raylib/include
