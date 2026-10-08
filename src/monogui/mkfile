@@ -1,0 +1,14 @@
+PROJECT = monogui
+LDFLAGS = -lm -lX11 -fsanitize=address
+
+<../../mkfiles/static-lib-with-entrypoints.mkfile
+<../../mkfiles/raylib.mkfile
+
+$PROJECT.exe: $RAYLIB_LIBRARY
+
+run:V: $PROJECT.exe
+	LSAN_OPTIONS='suppressions=lsan-suppressions.txt' ./$PROJECT.exe
+
+lib/lib$PROJECT.a: lib/render.o lib/layout.o
+
+# vim: ft=make

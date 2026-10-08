@@ -1,0 +1,5 @@
+# https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer#suppressions
+
+# https://github.com/raysan5/raylib/blob/a043255aa786088e4137b6f0260cf8c8dee03f57/src/rlgl.h#L2958
+leak:rlDrawRenderBatch
+leak:glfwCreateWindow
