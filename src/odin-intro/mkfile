@@ -1,0 +1,7 @@
+PATH=$PWD/../../bin:$PATH
+
+tax:V: tax-rate-schedules.odin
+  odin run -file $prereq
+
+fib:V: fib.odin
+  odin run -file $prereq
