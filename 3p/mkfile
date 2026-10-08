@@ -13,8 +13,3 @@ raylib.stamp:
 
 odin-lang:
   ./odin-download-extract.sloth
-
-odin.stamp: odin-lang
-  set -euo pipefail
-  
-  date > $target
