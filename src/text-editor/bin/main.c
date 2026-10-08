@@ -2,12 +2,12 @@
 
 #include "editor.h"
 
-//static inline void ignore(void *) {}
-#define IGNORE(x) ((void *)(&x))
+static inline void ignore(void *) {}
+//#define IGNORE(x) ((void *)(&x))
 
 int main(int argc, char **argv) {
-  IGNORE(argc);
-  IGNORE(argv);
+  ignore(&argc);
+  ignore(argv);
   Editor e = editor_new();
 
   if (e.buffer == nullptr) {
