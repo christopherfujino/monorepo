@@ -2,6 +2,6 @@ PROJECT = flooboo
 
 <../../mkfiles/static-lib-with-entrypoints.mkfile
 
-lib/lib$PROJECT.a: lib/mod.o
+lib/lib$PROJECT.a: lib/mod1.o
 
 # vim: ft=make
