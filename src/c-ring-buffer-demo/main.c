@@ -6,14 +6,16 @@ typedef struct {
   unsigned char flooboo[1];
 } Job;
 
+typedef Job T;
+
 /// This structure wastes 1 element of its cap.
 ///
 /// To be more efficient would require an additional flag to distinguish
 /// between an empty and a full buffer.
 typedef struct {
-  Job *buffer;
-  Job *bufferStart;
-  Job *bufferNext;
+  T *buffer;
+  T *bufferStart;
+  T *bufferNext;
   size_t cap;
 } Queue;
 
@@ -30,13 +32,13 @@ static size_t _jobQueueLength(Queue *queue) {
   return pastEnd - queue->bufferStart + queue->bufferNext - queue->buffer;
 }
 
-Job *queueRemove(Queue *queue) {
+T *queueRemove(Queue *queue) {
   if (queue->bufferStart == queue->bufferNext) {
     fprintf(stderr, "Ring buffer is empty! (%ld)\n", _jobQueueLength(queue));
     return nullptr;
   }
-  Job *current = queue->bufferStart;
-  Job *nextStart = current + 1;
+  auto current = queue->bufferStart;
+  auto nextStart = current + 1;
   if (nextStart >= queue->buffer + queue->cap) {
     nextStart = queue->buffer;
   }
@@ -77,7 +79,7 @@ static inline void _debugQueue(Queue *queue) {
 }
 
 int main(void) {
-  Job *buffer = calloc(CAP, sizeof(Job));
+  T *buffer = calloc(CAP, sizeof(T));
   auto queue = (Queue){
       .cap = CAP,
       .buffer = buffer,
@@ -95,7 +97,7 @@ int main(void) {
 
   while (1) {
     _debugQueue(&queue);
-    int ret = queueAdd(&queue, (Job){0});
+    int ret = queueAdd(&queue, (T){0});
     if (ret < 0) {
       break;
     }
