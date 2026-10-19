@@ -17,7 +17,8 @@ $PROJECT.exe: bin/main.o lib/lib$PROJECT.a
 
 <|cat $DEPFILES /dev/null
 
-phony_check:V:
+# Q attribute means do not print recipe before executing
+phony_check:VQ:
 	set -e
 	if [[ -z "$PROJECT" ]]; then
 		echo "Please set the \$PROJECT variable!" 2>&1
