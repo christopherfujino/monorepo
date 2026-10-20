@@ -1,14 +1,12 @@
-type operator =
-  | Plus
-  | Minus
-  | Product
-  | Divide
+type program = { exprs : expr list }
 
 and expr =
   (* TODO *)
   | Int of int
   | Binary of operator * expr * expr
   | Unit
+
+and operator = Plus | Minus | Product | Divide
 
 let op_to_s = function
   | Plus -> "+"

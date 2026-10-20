@@ -14,7 +14,7 @@
 
 %token EOF
 
-%start <expr> prog
+%start <program> prog
 
 (* These rows are ordered from low to high precedence *)
 %left PLUS MINUS
@@ -25,8 +25,8 @@
 (* Rules *)
 
 prog:
-  | e = expr; EOF { e }
-  | EOF { Unit }
+  | e = expr; EOF { {exprs = [e]} }
+  | EOF { {exprs = []} }
 
 expr:
   | e1 = expr; PLUS; e2 = expr { Binary (Plus, e1, e2) }

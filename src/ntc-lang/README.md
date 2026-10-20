@@ -14,3 +14,29 @@ fun main(len : Int, safe : Bool, label : String) -> String {
     }
 }
 ```
+
+```
+require [
+    n : Int,
+]
+```
+
+## Types
+
+- Primitives
+    - Booleans
+    - Null
+    - Numbers
+    - Strings
+
+Enumerations:
+
+```
+enum Color {
+    red,
+    green,
+    blue,
+}
+
+let foo : Color = .red
+```

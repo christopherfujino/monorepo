@@ -17,7 +17,7 @@ rule read = parse
   | int { INT (int_of_string (Lexing.lexeme lexbuf)) }
   (* eof is ocamllex built-in *)
   | eof { EOF }
-  | _ {failwith @@ Printf.sprintf "dunno how to lex \"%s\"" @@ Lexing.lexeme lexbuf}
+  | _ {failwith @@ Printf.sprintf "dunno how to lex `%s`" @@ Lexing.lexeme lexbuf}
 
 (* Footer *)
 {
