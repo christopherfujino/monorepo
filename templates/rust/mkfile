@@ -1,0 +1,5 @@
+run:V: main.exe
+  ./main.exe
+
+main.exe: main.rs
+  rustc $prereq -o $target
