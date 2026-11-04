@@ -16,6 +16,12 @@ info: latest update on 2026-10-15, rust version 1.99.1 (58cf8f9c3 2026-10-13)
   stable-x86_64-unknown-linux-gnu installed - rustc 1.99.1 (58cf8f9c3 2026-10-13)
 ```
 
+View local docs:
+
+```sh
+rustup doc
+```
+
 Ensure offline dependencies are cached:
 
 ```sh

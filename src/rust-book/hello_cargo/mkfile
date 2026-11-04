@@ -1,7 +1,0 @@
-all:V: build check
-
-build:V:
-  cargo build
-
-check:V:
-  cargo check

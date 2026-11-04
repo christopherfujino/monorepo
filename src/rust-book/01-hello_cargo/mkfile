@@ -1,0 +1,10 @@
+all:V: build
+
+build:V:
+  cargo build
+
+release:V:
+  cargo build --release
+
+check:V:
+  cargo check
