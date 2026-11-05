@@ -1,0 +1,9 @@
+(library
+ (name statically_typed_lang_demo))
+
+(menhir
+  (modules parser)
+
+  (flags --exn-carries-state --explain))
+
+(ocamllex lexer)
