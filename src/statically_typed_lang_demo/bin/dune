@@ -1,0 +1,4 @@
+(executable
+ (public_name statically_typed_lang_demo)
+ (name main)
+ (libraries statically_typed_lang_demo))

@@ -1,0 +1,7 @@
+PROJECT = statically_typed_lang_demo
+
+build:V:
+  dune build
+
+run:V:
+  dune exec "$PROJECT"

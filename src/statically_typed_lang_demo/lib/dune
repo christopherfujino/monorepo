@@ -1,0 +1,2 @@
+(library
+ (name statically_typed_lang_demo))
