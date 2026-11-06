@@ -1,4 +1,4 @@
 (executable
- (public_name statically_typed_lang_demo)
+ (public_name stl)
  (name main)
  (libraries statically_typed_lang_demo))
