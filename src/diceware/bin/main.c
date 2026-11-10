@@ -1,7 +1,7 @@
 #include <stdio.h>  // printf()
 #include <stdlib.h> // rand(), srand()
 #include <string.h> // strlen()
-#include <time.h>
+#include <time.h>   // time()
 
 #include "dictionary.h"
 
@@ -49,7 +49,10 @@ Word wordCat(Word a, Word b) {
 Word getWord() {
   // TODO: use mtrand
   int n = rand() % (sizeof(dictionary) / sizeof(char *));
-  return wordNew(dictionary[n]);
+  Word word = wordNew(dictionary[n]);
+  // toUpper
+  word.str[0] -= 32;
+  return word;
 }
 
 int main(void) {
@@ -60,6 +63,6 @@ int main(void) {
   for (unsigned char i = 0; i < n; i++) {
     w = wordCat(w, getWord());
   }
-  printf("You word is: %s\n", w.str);
+  printf("\n%s\n\n", w.str);
   return 0;
 }
