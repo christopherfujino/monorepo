@@ -23,3 +23,5 @@ bool clipboard(const char *password) {
 
   return true;
 }
+
+// i3-nagbar -t warning -m 'flooboo' --font 'pango:DejuVu Sans Mono 18'
