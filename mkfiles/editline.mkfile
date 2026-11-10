@@ -8,6 +8,8 @@ CFLAGS = -I$EDITLINE_ROOT/include $CFLAGS
 #LDFLAGS = -l:$EDITLINE_LIB $LDFLAGS
 
 $EDITLINE_LIB:
-	false # TODO
+	set -euo pipefail
+	cd "${REPO_ROOT}/3p"
+	mk editline.stamp
 
 # vim: ft=make
