@@ -1,6 +1,5 @@
 CC = bear --append -- clang
-# TODO find how to only set this if unset
-C_VERSION = c23
+C_VERSION = `{echo "${C_VERSION:-c23}"}
 AR = llvm-ar
 DEBUG_FLAGS = -g -O0 $DEBUG_FLAGS
 CFLAGS = $DEBUG_FLAGS \

@@ -1,0 +1,8 @@
+PROJECT = diceware
+C_VERSION = gnu23
+
+<../../mkfiles/static-lib-with-entrypoints.mkfile
+
+lib/lib$PROJECT.a: lib/diceware.o
+
+# vim: ft=make
