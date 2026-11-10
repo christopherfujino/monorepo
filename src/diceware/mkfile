@@ -3,7 +3,11 @@ C_VERSION = gnu23
 
 <../../mkfiles/static-lib-with-entrypoints.mkfile
 
-lib/lib$PROJECT.a: lib/diceware.o lib/dictionary_gen.o
+lib/lib$PROJECT.a: \
+	lib/clipboard.o \
+	lib/diceware.o \
+	lib/dictionary_gen.o \
+	lib/word.o
 
 dictionary.txt:
 	curl -L 'https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt' -o $target
