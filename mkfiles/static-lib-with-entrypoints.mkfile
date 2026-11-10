@@ -4,7 +4,8 @@ AR = llvm-ar
 DEBUG_FLAGS = -g -O0 $DEBUG_FLAGS
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
-				-Wall -Werror -Wextra -Wpedantic -Wvla \
+				-Wall -Werror -Wextra -Wpedantic \
+				-Wimplicit-fallthrough -Wvla \
 				-I$PWD/include \
 				$CFLAGS
 LDFLAGS = $LDFLAGS
