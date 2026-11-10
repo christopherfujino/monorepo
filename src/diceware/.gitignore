@@ -17,3 +17,6 @@ a.out
 
 # this generates hard-coded paths
 compile_commands.json
+
+dictionary.txt
+lib/dictionary_gen.c

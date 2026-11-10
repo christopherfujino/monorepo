@@ -3,6 +3,12 @@ C_VERSION = gnu23
 
 <../../mkfiles/static-lib-with-entrypoints.mkfile
 
-lib/lib$PROJECT.a: lib/diceware.o
+lib/lib$PROJECT.a: lib/diceware.o lib/dictionary_gen.o
+
+dictionary.txt:
+	curl -L 'https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt' -o $target
+
+lib/dictionary_gen.c: dictionary.txt codegen.rb
+	./codegen.rb dictionary.txt $target
 
 # vim: ft=make
