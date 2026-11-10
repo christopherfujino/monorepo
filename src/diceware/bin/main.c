@@ -13,6 +13,7 @@ int main(void) {
   for (unsigned char i = 0; i < n; i++) {
     w = wordCat(w, getWord());
   }
+  // TODO: consider using `zenity` if no TTY attached
   bool clipboarded = clipboard(w.str);
   printf("\n%s\n\n", w.str);
   if (clipboarded) {
