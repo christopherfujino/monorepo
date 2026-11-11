@@ -1,0 +1,6 @@
+PROJECT=chrislib
+<../../mkfiles/single-dir.mkfile
+
+CFLAGS = \
+  -DCHRISLIB_IMPL \
+  $CFLAGS
