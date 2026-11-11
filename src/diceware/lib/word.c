@@ -66,6 +66,7 @@ static bool didSeed = false;
 Word getWord() {
   if (!didSeed) {
     seed();
+    didSeed = true;
   }
   // TODO: use mtrand
   int n = rand() % (sizeof(dictionary) / sizeof(char *));
