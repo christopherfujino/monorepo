@@ -1,12 +1,13 @@
+MKSHELL = bash
+
 CC = bear --append -- clang
-# TODO find how to only set this if unset
-C_VERSION = c23
+C_VERSION = `{echo "${C_VERSION:-c23}"}
 AR = llvm-ar
-_CHECK = `{sh -c '[ -n "$PROJECT" ] || { echo "Error: PROJECT is not set." >&2; exit 1; }'}
-DEBUG_FLAGS = -g -O0 $DEBUG_FLAGS
+DEBUG_FLAGS = `{echo "${DEBUG_FLAGS:--g -O0}"}
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
-				-Wall -Werror -Wextra -Wpedantic -Wvla \
+				-Wall -Werror -Wextra -Wpedantic \
+				-Wimplicit-fallthrough -Wvla \
 				-I$PWD/include \
 				$CFLAGS
 LDFLAGS = $LDFLAGS
@@ -16,6 +17,14 @@ $PROJECT.exe: main.o
 	$CC $LDFLAGS $prereq -o $target
 
 <|cat $DEPFILES /dev/null
+
+# Q attribute means do not print recipe before executing
+phony_check:VQ:
+	set -e
+	if [[ -z "$PROJECT" ]]; then
+		echo "Please set the \$PROJECT variable!" 2>&1
+		false
+	fi
 
 %.o: %.c
 	$CC $CFLAGS \

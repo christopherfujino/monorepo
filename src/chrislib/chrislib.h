@@ -23,12 +23,13 @@ Result resultOk();
 Result resultErr(const char *fmt, ...);
 
 void resultTry(Result result);
+
 // basically `man 3 asprintf`
 [[gnu::format(printf, 2, 3)]] [[nodiscard]]
-Result chrisprintf(char **strp, const char *fmt, ...);
+Result cSprintf(char **restrict strp, const char *restrict fmt, ...);
 
 [[nodiscard]]
-Result vchrisprintf(char **strp, const char *fmt, va_list args);
+Result cVsprintf(char **restrict strp, const char *restrict fmt, va_list args);
 
 [[noreturn, gnu::format(printf, 1, 2)]]
 void panic(const char *fmt, ...);
@@ -79,7 +80,7 @@ void panic(const char *fmt, ...) {
 #endif
 }
 
-Result vchrisprintf(char **strp, const char *fmt, va_list args) {
+Result cVsprintf(char **strp, const char *fmt, va_list args) {
   constexpr size_t initialBuflen = 512;
   size_t currentBuflen = initialBuflen;
   static char staticBuf[initialBuflen];
@@ -116,10 +117,10 @@ Result vchrisprintf(char **strp, const char *fmt, va_list args) {
   return resultOk();
 }
 
-Result chrisprintf(char **restrict strp, const char *restrict fmt, ...) {
+Result cSprintf(char **restrict strp, const char *restrict fmt, ...) {
   va_list args = {};
   va_start(args);
-  Result result = vchrisprintf(strp, fmt, args);
+  Result result = cVsprintf(strp, fmt, args);
   va_end(args);
 
   return result;
@@ -130,7 +131,7 @@ Result resultErr(const char *fmt, ...) {
   va_list args = {};
   {
     va_start(args, fmt);
-    resultTry(vchrisprintf(&msg, fmt, args));
+    resultTry(cVsprintf(&msg, fmt, args));
     va_end(args);
   }
 

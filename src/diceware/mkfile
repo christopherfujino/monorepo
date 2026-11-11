@@ -2,11 +2,13 @@ PROJECT = diceware
 C_VERSION = gnu23
 
 <../../mkfiles/static-lib-with-entrypoints.mkfile
+<../../mkfiles/chrislib.mkfile
 
 lib/lib$PROJECT.a: \
-	lib/clipboard.o \
+	lib/chrislib_impl.o \
 	lib/diceware.o \
 	lib/dictionary_gen.o \
+	lib/utils.o \
 	lib/word.o
 
 dictionary.txt:

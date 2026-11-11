@@ -1,5 +1,13 @@
+#include <stdio.h>  // fprintf(), stderr
 #include <stdlib.h> // malloc()
+#include <stdlib.h> // rand(), srand()
 #include <string.h> // strlen()
+#include <time.h>   // time()
+#if defined(__linux__)
+#include <sys/random.h> // getrandom()
+#else
+#error "TODO: figure out non-linux random number seeding"
+#endif
 
 #include "dictionary.h"
 #include "word.h"
@@ -39,7 +47,26 @@ Word wordCat(Word a, Word b) {
   return output;
 }
 
+static void seed() {
+  unsigned int seed = 0;
+  ssize_t result = getrandom(&seed, sizeof(seed), 0x0);
+  if (result < 0) {
+    perror("getrandom() failed");
+    abort();
+  } else if ((size_t)result < sizeof(seed)) {
+    fprintf(stderr, "Expected %ld bytes but got %ld\n", result, sizeof(seed));
+    abort();
+  }
+
+  srand(seed);
+}
+
+static bool didSeed = false;
+
 Word getWord() {
+  if (!didSeed) {
+    seed();
+  }
   // TODO: use mtrand
   int n = rand() % (sizeof(dictionary) / sizeof(char *));
   Word word = wordNew(dictionary[n]);
@@ -47,5 +74,3 @@ Word getWord() {
   word.str[0] -= 32;
   return word;
 }
-
-

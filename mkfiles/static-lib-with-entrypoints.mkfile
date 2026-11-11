@@ -1,3 +1,6 @@
+# TODO: factor out common bits between this and single-dir.mkfile
+MKSHELL = bash
+
 CC = bear --append -- clang
 C_VERSION = `{echo "${C_VERSION:-c23}"}
 AR = llvm-ar
@@ -10,7 +13,6 @@ CFLAGS = $DEBUG_FLAGS \
 				$CFLAGS
 LDFLAGS = $LDFLAGS
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
-MKSHELL = bash
 
 $PROJECT.exe: bin/main.o lib/lib$PROJECT.a
 	$CC $LDFLAGS $prereq -o $target
