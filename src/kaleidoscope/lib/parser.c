@@ -19,7 +19,7 @@ static int _consume(enum Token token) {
   return CurTok = gettok();
 }
 
-static inline char *_strcpy(const char *original) {
+static inline char *_strcpy(const char original[static 1]) {
   assert(original != nullptr);
   size_t n = strlen(original);
   char *copy = malloc((n + 1) * sizeof(char));

@@ -3,15 +3,20 @@ CXX = bear --append -- clang++
 AR = llvm-ar
 PROJECT = flooboo
 DEBUG_FLAGS = -g -O0
-WARNING_FLAGS = -Wall -Werror -Wextra -Wpedantic
-CFLAGS = $DEBUG_FLAGS \
-				-std=c23 \
-				$WARNING_FLAGS \
-				-I$PWD/include
+WARNING_FLAGS = \
+								-Wall -Werror -Wextra -Wpedantic \
+								-Wimplicit-fallthrough -Wvla \
+								CFLAGS = $DEBUG_FLAGS \
+								$WARNING_FLAGS \
+								-I$PWD/include
 CXXFLAGS = $DEBUG_FLAGS \
 					 $WARNING_FLAGS \
 					 -std=c++17 \
 					 -I$PWD/include
+CFLAGS = $DEBUG_FLAGS \
+				 $WARNING_FLAGS \
+				 -std=c23 \
+				 -I$PWD/include
 LDFLAGS = `{llvm-config --ldflags --libs}
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 LIB_OBJECTS = lib/buffer.o \
