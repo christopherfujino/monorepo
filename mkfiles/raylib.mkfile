@@ -8,6 +8,6 @@ LDFLAGS = $LDFLAGS -lm -lX11
 $RAYLIB_LIBRARY:
 	set -euo pipefail
 	cd "$RAYLIB_ROOT/.." # 3p root
-	CFLAGS="" mk raylib.stamp
+	CFLAGS="" mk "${PWD}/raylib.stamp"
 
 # vim: ft=make

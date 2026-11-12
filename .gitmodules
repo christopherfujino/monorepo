@@ -2,3 +2,6 @@
   path = src/nespp
   branch = master
   url = git@github.com:christopherfujino/nespp
+[submodule "3p"]
+	path = 3p
+	url = git@github.com:christopherfujino/3p.git
