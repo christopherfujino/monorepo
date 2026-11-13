@@ -14,12 +14,16 @@ CFLAGS = $DEBUG_FLAGS \
 LDFLAGS = $LDFLAGS
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
+# Make this virtual target first so downstream can add other deps
+all:V: $PROJECT.exe
+
 $PROJECT.exe: bin/main.o lib/lib$PROJECT.a
 	$CC $LDFLAGS $prereq -o $target
 
 <|cat $DEPFILES /dev/null
 
 # Q attribute means do not print recipe before executing
+# TODO: should we stamp this?
 phony_check:VQ:
 	set -e
 	if [[ -z "$PROJECT" ]]; then

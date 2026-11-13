@@ -1,7 +1,11 @@
 PROJECT = txt
-<../../mkfiles/static-lib-with-entrypoints.mkfile
+#CFLAGS = -DDEBUG_TRACING $CFLAGS
 
-# TODO add deps
-#lib/lib$PROJECT.a:
+<../../mkfiles/static-lib-with-entrypoints.mkfile
+<../../mkfiles/raylib.mkfile
+
+$PROJECT.exe: $RAYLIB_LIBRARY
+
+lib/lib$PROJECT.a: lib/editor.o lib/box.o
 
 # vim: ft=make

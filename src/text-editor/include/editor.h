@@ -1,5 +1,5 @@
-#ifndef __TXT_EDITOR_H
-#define __TXT_EDITOR_H
+#ifndef MONOREPO_SRC_TXT_INCLUDE_EDITOR_H
+#define MONOREPO_SRC_TXT_INCLUDE_EDITOR_H
 
 typedef struct Buffer {
   const char *path;
@@ -11,4 +11,4 @@ typedef struct Editor {
 
 Editor editor_new(void);
 
-#endif // __TXT_EDITOR_H
+#endif // MONOREPO_SRC_TXT_INCLUDE_EDITOR_H
