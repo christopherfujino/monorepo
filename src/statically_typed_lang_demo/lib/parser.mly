@@ -1,5 +1,5 @@
 %{
-
+open Ast
 %}
 
 %token PLUS
@@ -9,7 +9,7 @@
 %token EOF
 %token <float> NUM
 
-%start <float> stmt
+%start <expr> stmt
 
 %%
 
@@ -27,4 +27,4 @@ expr2:
   | e = expr3 { e }
 
 expr3:
-  | n = NUM { n }
+  | n = NUM { Num n }
