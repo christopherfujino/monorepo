@@ -17,9 +17,13 @@ void my_render(Window win) {
                 (Vector2){.x = 0, .y = 0});
 }
 
+void update_state(Window win) {
+
+}
+
 int main() {
   Window win = window_init();
-  window_render_loop(win, my_render);
+  window_render_loop(win, my_render, update_state);
   window_dispose(win);
 
   return 0;

@@ -52,7 +52,8 @@ void window_render(Window win, RenderTarget target, Vector2 top_left);
 void window_dispose(Window _);
 
 typedef void (*WindowRenderCallback)(Window);
+typedef void (*UpdateStateCallback)(Window);
 
-void window_render_loop(Window win, WindowRenderCallback r);
+void window_render_loop(Window win, WindowRenderCallback r, UpdateStateCallback u);
 
 #endif // MONOREPO_SRC_TXT_INCLUDE_BOX_H
