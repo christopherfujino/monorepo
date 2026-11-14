@@ -1,13 +1,10 @@
 #include "box.h"
+#include "chrislib.h"
+#include "common.h"
 #include "raylib.h"
 
-// Does this need to be a function?
-// Probably since we want to use state to conditionally describe widget tree.
-// Use functional style state passing?
-// Or can we just use static state?
-// Functional style better for testing?
 void my_render(Window win) {
-  Widget root = widget_of_txt("Hello, world!");
+  Widget root = widget_of_txt((char *)win->buffer.data);
   window_render(win,
                 widget_layout(win, &root,
                               (Constraints){
@@ -17,12 +14,28 @@ void my_render(Window win) {
                 (Vector2){.x = 0, .y = 0});
 }
 
-void update_state(Window win) {
-
+void update_state([[maybe_unused]] Window win) {
+  int key = 0;
+  uint8_t byte = 0;
+  while ((key = GetKeyPressed()) != 0) {
+    if (key <= 127) {
+      byte = (uint8_t)key;
+      buffer_add(&win->buffer, 1, &byte);
+      fputc(key, stdout);
+      fflush(stdout);
+    } else {
+      switch (key) {
+      case KEY_BACKSPACE:
+        panic("TODO");
+      default:
+        debug("key = %c (%d)\n", key, key);
+      }
+    }
+  }
 }
 
 int main() {
-  Window win = window_init();
+  Window win = window_init("../../3p/fonts/mononoki/mononoki-spritesheet.fnt");
   window_render_loop(win, my_render, update_state);
   window_dispose(win);
 

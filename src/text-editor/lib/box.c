@@ -1,19 +1,44 @@
+#include <stdio.h>
 #include <stdlib.h> // malloc(), size_t
 #include <string.h> // strlen()
 
 #include "box.h"
-#include "common.h" // TODO: remove this dep
+#include "chrislib.h"
+#include "common.h"
 #include "raylib.h"
 
-Window window_init() {
-  Window w = malloc(sizeof(struct _Window));
+void buffer_add(Buffer *buffer, size_t n, uint8_t data[static n]) {
+  // buffer->len does not include trailing NULL byte
+  size_t available = buffer->cap - buffer->len;
+  if (n > available) {
+    debug("resizing buffer! cap = %ld, len = %ld, n = %ld\n", buffer->cap, buffer->len, n);
+    buffer->cap *= 2;
+    buffer->data = realloc(buffer->data, buffer->cap * sizeof(uint8_t));
+    if (buffer->data == nullptr) {
+      perror("realloc() failed");
+      panic("out of memory");
+    }
+  }
+  // buffer->len - 1 to chomp over NULL byte
+  memcpy(buffer->data + buffer->len - 1, data, n);
+  buffer->len += n;
+  buffer->data[buffer->len - 1] = '\0';
+}
+
+Window window_init(const char *font_path) {
+  Window w = calloc(1, sizeof(struct _Window));
   constexpr int screen_width = 600;
   constexpr int screen_height = 400;
   InitWindow(screen_width, screen_height, "Title");
   SetTargetFPS(60);
   // TODO
-  auto font = LoadFont("../../3p/fonts/mononoki/mononoki-spritesheet.fnt");
+  auto font = LoadFont(font_path);
 
+  // 2K
+  constexpr size_t initial_buflen = 1 << 11;
+  auto buffer = (Buffer){.cap = initial_buflen,
+                         .len = 0,
+                         .data = calloc(1, sizeof(char) * initial_buflen)};
   *w = (struct _Window){
       .color0 = GetColor(0x000000FF),
       .color2 = GetColor(0x888888FF),
@@ -24,6 +49,7 @@ Window window_init() {
       .screen_height = screen_height,
       .screen_width = screen_width,
       .padding = 1,
+      .buffer = buffer,
   };
   return w;
 }
@@ -57,7 +83,6 @@ void window_render(Window win, RenderTarget target, Vector2 top_left) {
   switch (target.type) {
   case widgetTypeTxt: {
     // TODO: border?
-    debug("size = (%f, %f)\n", target.size.x, target.size.y);
     DrawRectangle(top_left.x, top_left.y, target.size.x, target.size.y,
                   win->color2);
     const char *str = target.txt.str;
@@ -69,11 +94,13 @@ void window_render(Window win, RenderTarget target, Vector2 top_left) {
   }
 }
 
-void window_render_loop(Window win, WindowRenderCallback r) {
+void window_render_loop(Window win, WindowRenderCallback r,
+                        UpdateStateCallback u) {
   while (!WindowShouldClose()) {
     BeginDrawing();
     ClearBackground(win->color0);
 
+    u(win);
     r(win);
 
     EndDrawing();

@@ -5,10 +5,12 @@ CC = bear --append -- clang
 C_VERSION = `{echo "${C_VERSION:-c23}"}
 AR = llvm-ar
 DEBUG_FLAGS = -g -O0 $DEBUG_FLAGS
+# GCC has -Wvla-larger-than=0 which will catch stack allocated VLAs
+# (aVLA), but allow function parameters, as they decay to pointers
 CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
 				-Wall -Werror -Wextra -Wpedantic \
-				-Wimplicit-fallthrough -Wvla \
+				-Wimplicit-fallthrough \
 				-I$PWD/include \
 				$CFLAGS
 LDFLAGS = $LDFLAGS

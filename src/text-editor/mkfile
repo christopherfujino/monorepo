@@ -1,11 +1,12 @@
 PROJECT = txt
-#CFLAGS = -DDEBUG_TRACING $CFLAGS
+CFLAGS = -DDEBUG_TRACING $CFLAGS
 
 <../../mkfiles/static-lib-with-entrypoints.mkfile
 <../../mkfiles/raylib.mkfile
+<../../mkfiles/chrislib.mkfile
 
 $PROJECT.exe: $RAYLIB_LIBRARY
 
-lib/lib$PROJECT.a: lib/editor.o lib/box.o
+lib/lib$PROJECT.a: lib/editor.o lib/box.o lib/chrislib.o
 
 # vim: ft=make
