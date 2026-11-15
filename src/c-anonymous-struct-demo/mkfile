@@ -1,0 +1,8 @@
+CC = bear --append -- clang
+
+a.out: main.c
+	$CC -std=c23 $prereq -o $target
+
+run:V: a.out
+	./$prereq
+
