@@ -28,8 +28,6 @@ void update_state([[maybe_unused]] Window win) {
       case KEY_BACKSPACE:
         if (win->buffer.len > 0) {
           buffer_resize(&win->buffer, 0, win->buffer.len - 2);
-        } else {
-          debug("Nothing to backspace over!\n");
         }
         break;
       default:
