@@ -13,6 +13,7 @@ CFLAGS = $DEBUG_FLAGS \
 				-Wimplicit-fallthrough \
 				-I$PWD/include \
 				$CFLAGS
+# TODO: enable ASAN
 LDFLAGS = $LDFLAGS
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 

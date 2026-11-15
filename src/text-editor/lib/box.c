@@ -7,11 +7,20 @@
 #include "common.h"
 #include "raylib.h"
 
+void render_target_dispose(RenderTarget *target) {
+  switch (target->type) {
+  case widgetTypeTxt:
+    free((char *)target->txt.str);
+    return;
+  }
+}
+
 void buffer_add(Buffer *buffer, size_t n, uint8_t data[static n]) {
   // buffer->len does not include trailing NULL byte
   size_t available = buffer->cap - buffer->len;
   if (n > available) {
-    debug("resizing buffer! cap = %ld, len = %ld, n = %ld\n", buffer->cap, buffer->len, n);
+    debug("resizing buffer! cap = %ld, len = %ld, n = %ld\n", buffer->cap,
+          buffer->len, n);
     buffer->cap *= 2;
     buffer->data = realloc(buffer->data, buffer->cap * sizeof(uint8_t));
     if (buffer->data == nullptr) {
@@ -19,10 +28,36 @@ void buffer_add(Buffer *buffer, size_t n, uint8_t data[static n]) {
       panic("out of memory");
     }
   }
-  // buffer->len to chomp over NULL byte
-  memcpy(buffer->data + buffer->len, data, n);
+  if (n == 1) {
+    buffer->data[buffer->len] = *data;
+  } else {
+    // buffer->len to chomp over NULL byte
+    memcpy(buffer->data + buffer->len, data, n);
+  }
   buffer->len += n;
   buffer->data[buffer->len] = '\0';
+}
+
+// TODO: optimize this
+// we can universally realloc() instead of memcpy() if starting_index == 0
+void buffer_resize(Buffer *buffer, size_t starting_index, size_t ending_index) {
+  size_t new_size = ending_index - starting_index + 1;
+  if (new_size > buffer->cap) {
+    if (buffer->cap < new_size) {
+      buffer->data = realloc(buffer->data, new_size);
+      if (buffer->data == nullptr) {
+        perror("realloc() failed");
+        panic("out of memory");
+      }
+      buffer->cap = new_size;
+    }
+  }
+  uint8_t *new_buffer = calloc(1, buffer->cap);
+  memcpy(new_buffer, buffer->data + starting_index, new_size);
+  uint8_t *old_buffer = buffer->data;
+  buffer->data = new_buffer;
+  buffer->len = new_size;
+  free(old_buffer);
 }
 
 Window window_init(const char *font_path) {
@@ -53,6 +88,7 @@ Window window_init(const char *font_path) {
   };
   return w;
 }
+
 Widget widget_of_txt(const char *string) {
   size_t len = strlen(string) + 1;
   char *ptr = malloc(len * sizeof(char));
@@ -92,6 +128,7 @@ void window_render(Window win, RenderTarget target, Vector2 top_left) {
                win->font_height, 0, win->color4);
   } break;
   }
+  render_target_dispose(&target);
 }
 
 void window_render_loop(Window win, WindowRenderCallback r,

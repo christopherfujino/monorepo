@@ -26,9 +26,14 @@ void update_state([[maybe_unused]] Window win) {
     } else {
       switch (key) {
       case KEY_BACKSPACE:
-        panic("TODO");
+        if (win->buffer.len > 0) {
+          buffer_resize(&win->buffer, 0, win->buffer.len - 2);
+        } else {
+          debug("Nothing to backspace over!\n");
+        }
+        break;
       default:
-        debug("key = %c (%d)\n", key, key);
+        debug("key = %c (%d) [%s]\n", key, key, GetKeyName(key));
       }
     }
   }

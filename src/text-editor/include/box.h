@@ -16,6 +16,9 @@ typedef struct {
 
 void buffer_add(Buffer *buffer, size_t n, uint8_t data[static n]);
 
+/// Inclusive start and ending indices of new buffer.
+void buffer_resize(Buffer *buffer, size_t starting_index, size_t ending_index);
+
 // TODO: embed user state struct
 struct _Window {
   Color color0;
@@ -57,6 +60,8 @@ typedef struct {
     } txt;
   };
 } RenderTarget;
+
+void render_target_dispose(RenderTarget *target);
 
 /// Copies [string] but does not free it.
 Widget widget_of_txt(const char *string);

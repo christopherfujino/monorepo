@@ -29,4 +29,12 @@ static inline void debug([[maybe_unused]]const char *restrict fmt, ...) {
 #endif
 }
 
+static inline int min(int a, int b) {
+  return (a < b) ? a : b;
+}
+
+static inline int max(int a, int b) {
+  return (a > b) ? a : b;
+}
+
 #endif // MONOREPO_SRC_TXT_INCLUDE_COMMON_H
