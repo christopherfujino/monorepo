@@ -19,10 +19,10 @@ void buffer_add(Buffer *buffer, size_t n, uint8_t data[static n]) {
       panic("out of memory");
     }
   }
-  // buffer->len - 1 to chomp over NULL byte
-  memcpy(buffer->data + buffer->len - 1, data, n);
+  // buffer->len to chomp over NULL byte
+  memcpy(buffer->data + buffer->len, data, n);
   buffer->len += n;
-  buffer->data[buffer->len - 1] = '\0';
+  buffer->data[buffer->len] = '\0';
 }
 
 Window window_init(const char *font_path) {
