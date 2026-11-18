@@ -85,6 +85,10 @@ Window window_init(const char *font_path) {
       .screen_width = screen_width,
       .padding = 1,
       .buffer = buffer,
+      .kbd_state =
+          (KeyboardState){
+              .shift = false,
+          },
   };
   return w;
 }

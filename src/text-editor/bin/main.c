@@ -1,5 +1,6 @@
+#include <ctype.h>
+
 #include "box.h"
-#include "chrislib.h"
 #include "common.h"
 #include "raylib.h"
 
@@ -20,7 +21,8 @@ void update_state([[maybe_unused]] Window win) {
   while ((key = GetKeyPressed()) != 0) {
     if (key <= 127) {
       byte = (uint8_t)key;
-      buffer_add(&win->buffer, 1, &byte);
+      uint8_t ch = win->kbd_state.shift ? byte : tolower(byte);
+      buffer_add(&win->buffer, 1, &ch);
       fputc(key, stdout);
       fflush(stdout);
     } else {
@@ -29,6 +31,11 @@ void update_state([[maybe_unused]] Window win) {
         if (win->buffer.len > 0) {
           buffer_resize(&win->buffer, 0, win->buffer.len - 2);
         }
+        break;
+      case KEY_LEFT_SHIFT:
+      case KEY_RIGHT_SHIFT:
+        // TODO: handle matrix of permutations
+        printf("key shift\n");
         break;
       default:
         debug("key = %c (%d) [%s]\n", key, key, GetKeyName(key));

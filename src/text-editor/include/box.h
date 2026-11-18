@@ -19,6 +19,10 @@ void buffer_add(Buffer *buffer, size_t n, uint8_t data[static n]);
 /// Inclusive start and ending indices of new buffer.
 void buffer_resize(Buffer *buffer, size_t starting_index, size_t ending_index);
 
+typedef struct {
+  bool shift;
+} KeyboardState;
+
 // TODO: embed user state struct
 struct _Window {
   Color color0;
@@ -31,6 +35,7 @@ struct _Window {
   float screen_width;
   float padding;
   Buffer buffer;
+  KeyboardState kbd_state;
 };
 typedef struct _Window *Window;
 
