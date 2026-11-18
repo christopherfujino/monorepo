@@ -6,7 +6,6 @@ C_VERSION = gnu23
 
 lib/lib$PROJECT.a: \
 	lib/chrislib_impl.o \
-	lib/diceware.o \
 	lib/dictionary_gen.o \
 	lib/utils.o \
 	lib/word.o
