@@ -1,0 +1,16 @@
+on:
+  push:
+    branches: ['*']
+
+jobs:
+  compile-all:
+    name: compile every project
+    runs-on: ubuntu-latest
+    # container:
+
+  steps:
+    - name: TODO
+      shell: bash -exo pipefail {0}
+      run: |
+        cat /etc/issue
+        uname -a
