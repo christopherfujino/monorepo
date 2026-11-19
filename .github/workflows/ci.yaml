@@ -10,15 +10,11 @@ jobs:
 
     steps:
       - name: checkout code
-        shell: bash -exuo pipefail {0}
-        # TODO: support when GITHUB_REF is a tag (e.g. `refs/tags/v0.1.0`)
-        run: |
-          env
-          REF=$(echo "${GITHUB_REF}" | sed -n 's/refs\/heads\/\(.*\)/\1/p')
-          git clone \
-            --recurse-submodules \
-            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
-            -b "${REF}"
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+          submodules: true
+
       - name: install deps
         shell: bash -exuo pipefail {0}
         run: |
