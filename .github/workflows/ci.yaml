@@ -16,7 +16,13 @@ jobs:
           env
           REF=$(echo "${GITHUB_REF}" | sed -n 's/refs\/heads\/\(.*\)/\1/p')
           git clone "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" -b "${REF}"
-
+      - name: install deps
+        shell: bash -exuo pipefail {0}
+        run: |
+          sudo apt-get update
+          sudo apt-get --yes upgrade
+          sudo apt-get install --yes \
+            9base
       - name: build
         shell: bash -exuo pipefail {0}
         working-directory: ./monorepo
