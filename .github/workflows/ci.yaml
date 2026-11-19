@@ -12,4 +12,6 @@ jobs:
       - name: TODO
         shell: bash -exo pipefail {0}
         run: |
+          pwd
+          ls -alh
           ./tool/build-all.sh
