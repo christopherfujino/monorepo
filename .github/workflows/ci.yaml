@@ -15,7 +15,10 @@ jobs:
         run: |
           env
           REF=$(echo "${GITHUB_REF}" | sed -n 's/refs\/heads\/\(.*\)/\1/p')
-          git clone "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" -b "${REF}"
+          git clone \
+            --recurse-submodules \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+            -b "${REF}"
       - name: install deps
         shell: bash -exuo pipefail {0}
         run: |
