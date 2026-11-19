@@ -27,6 +27,8 @@ jobs:
         shell: bash -exuo pipefail {0}
         working-directory: ./monorepo
         run: |
+          # default path of 9base on ubuntu
+          export PATH="~/.local/bin:$PATH"
           pwd
           ls -alh
           ./tool/build-all.sh
