@@ -32,6 +32,7 @@ jobs:
         run: |
           # default path of 9base on ubuntu
           export PATH="~/.local/bin:$PATH"
+          ls -alh ~/.local/bin
           pwd
           ls -alh
           ./tool/build-all.sh
