@@ -7,27 +7,23 @@ jobs:
     name: compile every project
     runs-on: ubuntu-latest
     # container:
-
     steps:
       - name: checkout code
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
           submodules: true
-
       - name: install deps
         shell: bash -exuo pipefail {0}
         run: |
           sudo apt-get update
           sudo apt-get --yes upgrade
           sudo apt-get --quiet install --yes \
-            9base
+            9base \
+            bear
       - name: build
         shell: bash -exuo pipefail {0}
-        #working-directory: ./monorepo
         run: |
-          pwd
           # default path of 9base on ubuntu
           export PATH="$PATH:/usr/lib/plan9/bin"
-          ls -alh /usr/lib/plan9/bin
           ./tool/build-all.sh
