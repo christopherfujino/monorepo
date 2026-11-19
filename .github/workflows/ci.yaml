@@ -9,8 +9,17 @@ jobs:
     # container:
 
     steps:
-      - name: TODO
-        shell: bash -exo pipefail {0}
+      - name: checkout code
+        shell: bash -exuo pipefail {0}
+        # TODO: support when GITHUB_REF is a tag (e.g. `refs/tags/v0.1.0`)
+        run: |
+          env
+          REF=$(echo "${GITHUB_REF}" | sed -n 's/refs\/heads\/\(.*\)/\1/p')
+          git clone "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" -b "${REF}"
+
+      - name: build
+        shell: bash -exuo pipefail {0}
+        working-directory: ./monorepo
         run: |
           pwd
           ls -alh
