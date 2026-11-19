@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     # container:
 
-  steps:
-    - name: TODO
-      shell: bash -exo pipefail {0}
-      run: |
-        cat /etc/issue
-        uname -a
+    steps:
+      - name: TODO
+        shell: bash -exo pipefail {0}
+        run: |
+          cat /etc/issue
+          uname -a
