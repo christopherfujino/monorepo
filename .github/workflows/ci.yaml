@@ -12,5 +12,4 @@ jobs:
       - name: TODO
         shell: bash -exo pipefail {0}
         run: |
-          cat /etc/issue
-          uname -a
+          ./tool/build-all.sh
