@@ -20,11 +20,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get --yes upgrade
-          sudo apt-get install --yes \
+          sudo apt-get --quiet install --yes \
             9base
       - name: build
         shell: bash -exuo pipefail {0}
-        working-directory: ./monorepo
+        #working-directory: ./monorepo
         run: |
           # default path of 9base on ubuntu
           export PATH="~/.local/bin:$PATH"
