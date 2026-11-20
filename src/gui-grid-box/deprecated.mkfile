@@ -1,25 +1,25 @@
 CC = clang
 AR = llvm-ar
-PROJECT = editline-test
-ROOT = `{realpath "$PWD/.."}
-EDITLINE = `{realpath "$PWD/../../../3p/editline"}
+PROJECT = gui-grid-box
+ROOT = `{realpath "$PWD"}
 DEBUG_FLAGS = -g -O0
 CFLAGS = $DEBUG_FLAGS \
 				-Wall -Werror -Wextra -Wpedantic \
-				-I$ROOT/include -I$EDITLINE/include
+				-I./include
 LDFLAGS =
 DEPFILES = `{/bin/sh -c 'find . -maxdepth 1 -name "*.d"'}
 
-# Run
 run:V: $PROJECT
 	"./$PROJECT"
 
 <|cat $DEPFILES /dev/null
 
-# Link
-$PROJECT: main.o $EDITLINE/src/.libs/libeditline.a
+$PROJECT: main.o lib$PROJECT.a
 	$CC $CFLAGS $LDFLAGS \
 		$prereq -o $target
+
+lib$PROJECT.a: $LIB_OUT/mod1.o
+	$AR rcs $target $prereq
 
 %.o: $ROOT/bin/%.c
 	$CC $CFLAGS \

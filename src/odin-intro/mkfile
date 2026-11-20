@@ -1,5 +1,9 @@
 PATH=$PWD/../../bin:$PATH
 
+# TODO: wire up odin into CI
+none:V:
+  true
+
 tax:V: tax-rate-schedules.odin
   odin run -file $prereq
 
