@@ -9,18 +9,15 @@ jobs:
     container: ubuntu:26.04
     steps:
       - name: bootstrap checkout
-        run: apt-get update && apt-get --yes upgrade && apt-get install --yes git
+        run: ./tool/fetch-github-like-deps.sh
       - name: checkout code
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
           submodules: recursive
       - name: install deps
-        shell: bash -exuo pipefail {0}
         run: ./tool/fetch-deps.sh
       - name: setup OCaml
-        shell: bash -exuo pipefail {0}
         run: ./tool/setup-ocaml.sh
       - name: build
-        shell: bash -exuo pipefail {0}
         run: ./tool/build-all.sh

@@ -19,7 +19,7 @@ EDITLINE_DEPS="\
 # TODO: remove libreadline-dev once we've removed it from sloth
 OCAML_DEPS="\
   opam \
-  libreadline-dev
+  libreadline-dev \
 "
 
 # https://wiki.ubuntu.com/Raylib
