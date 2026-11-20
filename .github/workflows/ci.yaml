@@ -19,7 +19,13 @@ jobs:
           fetch-depth: 1
           submodules: recursive
       - name: install deps
+        shell: bash
         run: |
+          set -euxo pipefail
+          whoami
+          id -u
+          ls -alh tool
+
           ./tool/fetch-github-like-deps.sh
           ./tool/fetch-deps.sh
       - name: setup OCaml
