@@ -28,6 +28,10 @@ jobs:
 
           ./tool/fetch-github-like-deps.sh
           ./tool/fetch-deps.sh
+
+          CLANG=clang-21
+          update-alternatives --install /usr/bin/clang clang "$(which "$CLANG")" 100
+          update-alternatives --install /usr/bin/clang++ clang++ "$(which "clang++-${CLANG_VERSION}")" 100
       - name: setup OCaml
         run: ./tool/setup-ocaml.sh
       - name: build
