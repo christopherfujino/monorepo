@@ -22,10 +22,6 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
-          whoami
-          id -u
-          ls -alh tool
-
           ./tool/fetch-github-like-deps.sh
           ./tool/fetch-deps.sh
 
