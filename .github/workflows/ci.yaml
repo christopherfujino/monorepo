@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
-          submodules: true
+          submodules: recursive
       - name: install deps
         shell: bash -exuo pipefail {0}
         run: ./tool/fetch-deps.sh
