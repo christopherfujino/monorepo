@@ -16,6 +16,7 @@ GITHUB_PACKAGES=" \
   g++ \
   git \
   libtool \
+  ninja-build \
   npm \
   ruby \
   sudo \
