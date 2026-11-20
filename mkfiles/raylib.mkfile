@@ -1,3 +1,4 @@
+MKSHELL = bash
 RAYLIB_ROOT = `{realpath "$PWD/../../3p/raylib"}
 RAYLIB_BUILD = $RAYLIB_ROOT/build
 RAYLIB_INCLUDE = $RAYLIB_BUILD/raylib/include
@@ -8,6 +9,6 @@ LDFLAGS = $LDFLAGS -lm -lX11
 $RAYLIB_LIBRARY:
 	set -euo pipefail
 	cd "$RAYLIB_ROOT/.." # 3p root
-	CFLAGS="" mk "${PWD}/raylib.stamp"
+	CFLAGS="" mk raylib.stamp
 
 # vim: ft=make

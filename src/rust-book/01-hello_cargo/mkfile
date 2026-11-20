@@ -1,3 +1,6 @@
+none:V:
+  true
+
 all:V: build
 
 build:V:

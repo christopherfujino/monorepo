@@ -1,9 +1,11 @@
 PROJECT = txt
-CFLAGS = -DDEBUG_TRACING $CFLAGS
+LDFLAGS = -fsanitize=address
 
 <../../mkfiles/static-lib-with-entrypoints.mkfile
 <../../mkfiles/raylib.mkfile
 <../../mkfiles/chrislib.mkfile
+
+CFLAGS = -DDEBUG_TRACING $CFLAGS
 
 $PROJECT.exe: $RAYLIB_LIBRARY
 

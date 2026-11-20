@@ -6,7 +6,6 @@ DEBUG_FLAGS = -g -O0
 WARNING_FLAGS = \
 								-Wall -Werror -Wextra -Wpedantic \
 								-Wimplicit-fallthrough -Wvla \
-								CFLAGS = $DEBUG_FLAGS \
 								$WARNING_FLAGS \
 								-I$PWD/include
 CXXFLAGS = $DEBUG_FLAGS \

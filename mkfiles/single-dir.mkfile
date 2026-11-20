@@ -8,15 +8,16 @@ CFLAGS = $DEBUG_FLAGS \
 				-std=$C_VERSION \
 				-Wall -Werror -Wextra -Wpedantic \
 				-Wimplicit-fallthrough -Wvla \
-				-I$PWD/include \
 				$CFLAGS
 LDFLAGS = $LDFLAGS
 DEPFILES = `{/bin/sh -c 'find . -name "*.d"'}
 
-$PROJECT.exe: main.o
-	$CC $LDFLAGS $prereq -o $target
+all:V: $PROJECT.exe
 
 <|cat $DEPFILES /dev/null
+
+$PROJECT.exe: main.o
+	$CC $LDFLAGS $prereq -o $target
 
 # Q attribute means do not print recipe before executing
 phony_check:VQ:
@@ -33,7 +34,5 @@ phony_check:VQ:
 
 clean:V:
 	rm -rf *.exe *.d *.o *.a compile_commands.json
-	(cd bin && rm -f *.d *.o *.a)
-	(cd lib && rm -f *.d *.o *.a)
 
 # vim: ft=make

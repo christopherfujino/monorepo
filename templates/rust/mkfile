@@ -1,5 +1,9 @@
-run:V: main.exe
-  ./main.exe
+# TODO: setup rust CI toolchain
+noop:V:
+  true
 
 main.exe: main.rs
   rustc $prereq -o $target
+
+run:V: main.exe
+  ./main.exe

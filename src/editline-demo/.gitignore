@@ -1,4 +1,6 @@
 *.o
+*.d
+*.a
 
 # macOS debug symbols
 *.dSYM

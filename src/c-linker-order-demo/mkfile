@@ -1,8 +1,7 @@
 CC = clang
 AR = llvm-ar
 
-all:V: works.exe broken.exe
-
+# Ensure this is the first target, so CI doesn't break
 works.exe: main.o lib.a
   clang main.o lib.a -o works.exe
 
