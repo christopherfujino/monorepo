@@ -33,9 +33,9 @@ RAYLIB_DEPS="\
   libglu1-mesa-dev \
 "
 
-sudo apt-get update
-sudo apt-get --yes upgrade
-sudo apt-get --quiet install --yes \
+apt-get update
+apt-get --yes upgrade
+apt-get --quiet install --yes \
   $GENERAL_BUILDTOOLS \
   $RAYLIB_DEPS \
   $OCAML_DEPS
