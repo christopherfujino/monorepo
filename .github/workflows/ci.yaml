@@ -15,15 +15,10 @@ jobs:
           submodules: true
       - name: install deps
         shell: bash -exuo pipefail {0}
-        run: |
-          sudo apt-get update
-          sudo apt-get --yes upgrade
-          sudo apt-get --quiet install --yes \
-            9base \
-            bear
+        run: ./tool/fetch-deps.sh
+      - name: setup OCaml
+        shell: bash -exuo pipefail {0}
+        run: ./tool/setup-ocaml.sh
       - name: build
         shell: bash -exuo pipefail {0}
-        run: |
-          # default path of 9base on ubuntu
-          export PATH="$PATH:/usr/lib/plan9/bin"
-          ./tool/build-all.sh
+        run: ./tool/build-all.sh
