@@ -27,6 +27,9 @@ assetgen.exe: bin/assetgen.o $RAYLIB_LIBRARY
 		-o $target \
 		$prereq
 
+gen/map_gen.h: assetgen.exe
+	./assetgen.exe
+
 bin/%.o: bin/%.c $RAYLIB_LIBRARY
 	$CC $CFLAGS \
 		-MT $target -MMD -MP -MF bin/$stem.d \
@@ -35,7 +38,7 @@ bin/%.o: bin/%.c $RAYLIB_LIBRARY
 lib/lib$PROJECT.a: lib/render.o lib/state.o lib/update_state.o lib/map.o
 	$AR rcs $target $prereq
 
-lib/%.o: lib/%.c $RAYLIB_LIBRARY
+lib/%.o: lib/%.c $RAYLIB_LIBRARY gen/map_gen.h
 	$CC $CFLAGS \
 		-MT $target -MMD -MP -MF lib/$stem.d \
 		-c lib/$stem.c -o $target
