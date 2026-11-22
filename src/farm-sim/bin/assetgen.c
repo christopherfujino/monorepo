@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h> // memset()
 #include <sys/param.h>
-#include <time.h> // nanosleep()
+#include <time.h>   // nanosleep()
+#include <unistd.h> // isatty()
 
 static inline void lock(pthread_mutex_t *mutex) {
   if (pthread_mutex_lock(mutex) != 0) {
@@ -69,6 +70,10 @@ int main() {
     memset(&sharedJobStats, 0x0, sizeof(sharedJobStats));
     unlock(&m);
   }
+  bool animate = true;
+  if (!isatty(STDIN_FILENO)) {
+    animate = false;
+  }
   pthread_t workerThreads[job_count] = {};
   int workerArgs[job_count] = {};
   constexpr void *threadAttributes = nullptr;
@@ -86,52 +91,59 @@ int main() {
       .tv_sec = 0,
       .tv_nsec = 37'500'000,
   };
+  if (!animate) {
+    sleepSpec.tv_nsec = 500'000'000;
+  }
   int finishCount = 0;
   size_t animationIndex = 0;
   char buffer[256] = {};
   size_t bufsize = 0;
+  if (!animate) {
+    printf("Executing %d jobs...\n", job_count);
+  }
   while (finishCount < job_count) {
-    putchar('\r');
-    bufsize = snprintf(buffer, sizeof(buffer), "Executing %d of %d jobs...",
-                       job_count - finishCount, job_count);
-    if (bufsize < 0) {
-      perror("Failed to call snprintf()");
-      abort();
-    }
-    // return value of snprintf() will not be accurate if truncated
-    bufsize = MIN(bufsize, sizeof(buffer) - 1);
-    animationIndex += 1;
-    if (animationIndex == bufsize) {
-      animationIndex = 0;
-      for (size_t i = 0; i < bufsize; i++) {
-        putchar(' ');
-      }
+    if (animate) {
       putchar('\r');
-    }
-    //printf("[DEBUG] %s\n", buffer);
-    for (size_t i = 0; i < animationIndex; i++) {
-      char c = buffer[i];
-      if (c == '\0') {
-        break;
+      bufsize = snprintf(buffer, sizeof(buffer), "Executing %d of %d jobs...",
+                         job_count - finishCount, job_count);
+      if (bufsize < 0) {
+        perror("Failed to call snprintf()");
+        abort();
       }
-      putchar(c);
+      // return value of snprintf() will not be accurate if truncated
+      bufsize = MIN(bufsize, sizeof(buffer) - 1);
+      animationIndex += 1;
+      if (animationIndex == bufsize) {
+        animationIndex = 0;
+        for (size_t i = 0; i < bufsize; i++) {
+          putchar(' ');
+        }
+        putchar('\r');
+      }
+      // printf("[DEBUG] %s\n", buffer);
+      for (size_t i = 0; i < animationIndex; i++) {
+        char c = buffer[i];
+        if (c == '\0') {
+          break;
+        }
+        putchar(c);
+      }
+      if (fflush(stdout) != 0) {
+        perror("Failed to call fflush()");
+        abort();
+      }
     }
-    if (fflush(stdout) != 0) {
-      perror("Failed to call fflush()");
-      abort();
-    }
-
     nanosleep(&sleepSpec, nullptr);
-    finishCount = 0;
+
+    lock(&m);
     {
-      lock(&m);
       for (size_t i = 0; i < job_count; i++) {
         if (sharedJobStats[i].finished) {
           finishCount++;
         }
       }
-      unlock(&m);
     }
+    unlock(&m);
   }
 
   bool allSuccess = true;
