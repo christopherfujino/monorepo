@@ -9,6 +9,7 @@ GENERAL_BUILDTOOLS="\
   bear \
   llvm \
   llvm-dev \
+  golang \
 "
 
 EDITLINE_DEPS="\
