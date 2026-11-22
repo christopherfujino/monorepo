@@ -32,4 +32,6 @@ jobs:
       - name: setup OCaml
         run: ./tool/setup-ocaml.sh
       - name: build
-        run: ./tool/build-all.sh
+        run: |
+          export PATH="$PATH:$PWD/bin"
+          ./tool/build-all.sh
