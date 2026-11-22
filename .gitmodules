@@ -8,3 +8,6 @@
 [submodule "src/sloth"]
 	path = src/sloth
 	url = git@github.com:christopherfujino/slothscript
+[submodule "src/doc-builder"]
+	path = src/doc-builder
+	url = git@github.com:christopherfujino/doc-builder
