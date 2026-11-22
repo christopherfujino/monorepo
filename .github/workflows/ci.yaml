@@ -34,4 +34,5 @@ jobs:
       - name: build
         run: |
           export PATH="$PATH:$PWD/bin"
+          echo $PATH
           ./tool/build-all.sh
