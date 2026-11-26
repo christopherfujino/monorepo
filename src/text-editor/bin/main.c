@@ -65,8 +65,14 @@ void update_state(Window win) {
       // TODO: hmm, why minus 2?
       line_resize(win->buffer.current, 0, win->buffer.current->len - 2);
     } else {
-      // TODO manage deleting a line
-      panic("TODO: implement deleting lines");
+      Line *next = win->buffer.current->next;
+      Line *previous =
+          buffer_get_previous_line(&win->buffer, win->buffer.current);
+      if (previous != nullptr) {
+        win->buffer.current = line_dispose(win->buffer.current);
+        win->buffer.current = previous;
+        win->buffer.current->next = next;
+      }
     }
   }
 

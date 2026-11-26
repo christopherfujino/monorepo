@@ -18,18 +18,23 @@ typedef struct Line {
   struct Line *next;
 } Line;
 
+Line *line_new();
+
+// TODO: add from cursor, not len
+void line_append(Line *line, size_t n, uint8_t data[static n]);
+
+/// Inclusive start and ending indices of new buffer.
+void line_resize(Line *line, size_t starting_index, size_t ending_index);
+
+[[nodiscard]]
+void *line_dispose(Line *line);
+
 typedef struct {
   Line *first;
   Line *current;
 } Buffer;
 
-Line *line_new();
-
-// TODO: add from cursor, not len
-void line_append(Line *buffer, size_t n, uint8_t data[static n]);
-
-/// Inclusive start and ending indices of new buffer.
-void line_resize(Line *buffer, size_t starting_index, size_t ending_index);
+Line *buffer_get_previous_line(Buffer *buffer, Line *after);
 
 typedef struct {
   bool left_shift;

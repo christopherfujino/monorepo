@@ -75,6 +75,23 @@ void line_resize(Line *buffer, size_t starting_index, size_t ending_index) {
   free(old_buffer);
 }
 
+[[nodiscard]]
+void *line_dispose(Line *line) {
+  free(line->data);
+  free(line);
+  return nullptr;
+}
+
+Line *buffer_get_previous_line(Buffer *buffer, Line *after) {
+  for (Line *current = buffer->first; current != nullptr;
+       current = current->next) {
+    if (current->next == after) {
+      return current;
+    }
+  }
+  return nullptr;
+}
+
 Window window_init(const char *font_path) {
   Window w = calloc(1, sizeof(struct _Window));
   constexpr int screen_width = 600;
@@ -169,7 +186,8 @@ void window_render(Window win, RenderTarget target, Vector2 top_left) {
     while (current_line != nullptr) {
       DrawTextEx(win->font, (char *)current_line->data,
                  (Vector2){.x = top_left.x + win->padding,
-                           .y = top_left.y + win->padding + win->font_height * line_count},
+                           .y = top_left.y + win->padding +
+                                win->font_height * line_count},
                  win->font_height, 0, win->color4);
       line_count += 1;
       current_line = current_line->next;
