@@ -1,11 +1,12 @@
 #include <ctype.h>
+#include <stdio.h>
 
 #include "box.h"
-#include "common.h"
+#include "chrislib.h" // panic()
 #include "raylib.h"
 
 void my_render(Window win) {
-  Widget root = widget_of_txt((char *)win->buffer.data);
+  Widget root = widget_of_buffer(win->buffer);
   window_render(win,
                 widget_layout(win, &root,
                               (Constraints){
@@ -15,33 +16,64 @@ void my_render(Window win) {
                 (Vector2){.x = 0, .y = 0});
 }
 
-void update_state([[maybe_unused]] Window win) {
-  int key = 0;
-  uint8_t byte = 0;
-  while ((key = GetKeyPressed()) != 0) {
-    if (key <= 127) {
-      byte = (uint8_t)key;
-      uint8_t ch = win->kbd_state.shift ? byte : tolower(byte);
-      buffer_add(&win->buffer, 1, &ch);
-      fputc(key, stdout);
+static inline bool _check_key(int key) {
+  return IsKeyPressed(key) || IsKeyPressedRepeat(key);
+}
+
+void update_state(Window win) {
+  if (IsKeyDown(KEY_LEFT_SHIFT)) {
+    win->kbd_state.left_shift = true;
+  }
+  if (win->kbd_state.left_shift && IsKeyReleased(KEY_LEFT_SHIFT)) {
+    win->kbd_state.left_shift = false;
+  }
+  for (uint8_t current_key = KEY_A; current_key <= KEY_Z; current_key++) {
+    if (_check_key(current_key)) {
+      uint8_t ch =
+          win->kbd_state.left_shift ? current_key : tolower(current_key);
+      line_append(win->buffer.current, 1, &ch);
+      fputc(ch, stdout);
       fflush(stdout);
-    } else {
-      switch (key) {
-      case KEY_BACKSPACE:
-        if (win->buffer.len > 0) {
-          buffer_resize(&win->buffer, 0, win->buffer.len - 2);
-        }
-        break;
-      case KEY_LEFT_SHIFT:
-      case KEY_RIGHT_SHIFT:
-        // TODO: handle matrix of permutations
-        printf("key shift\n");
-        break;
-      default:
-        debug("key = %c (%d) [%s]\n", key, key, GetKeyName(key));
-      }
     }
   }
+
+  if (_check_key(KEY_SPACE)) {
+    line_append(win->buffer.current, 1, (uint8_t[]){KEY_SPACE});
+    fputc(' ', stdout);
+    fflush(stdout);
+  }
+
+  if (_check_key(KEY_ENTER)) {
+    Line *next = nullptr;
+    if (win->buffer.current->next != nullptr) {
+      next = win->buffer.current->next;
+    }
+    Line *current = line_new();
+    // Allow previous line to point to newly created line
+    win->buffer.current->next = current;
+    // Update buffer to point to newly created line
+    win->buffer.current = current;
+    // Have newly created line point to the original next, if it exists
+    win->buffer.current->next = next;
+
+    fputc('\n', stdout);
+    fflush(stdout);
+  }
+
+  if (_check_key(KEY_BACKSPACE)) {
+    if (win->buffer.current->len > 0) {
+      // TODO: hmm, why minus 2?
+      line_resize(win->buffer.current, 0, win->buffer.current->len - 2);
+    } else {
+      // TODO manage deleting a line
+      panic("TODO: implement deleting lines");
+    }
+  }
+
+  // TODO: whitespace
+  // KEY_TAB, KEY_ENTER
+  // TODO: keypad? (KEY_KEP_0, et al)
+  // TODO: handle right shift
 }
 
 int main() {
