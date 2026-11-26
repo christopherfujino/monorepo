@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "box.h"
-#include "chrislib.h" // panic()
+#include "common.h" // debug()
 #include "raylib.h"
 
 void my_render(Window win) {
@@ -20,6 +20,41 @@ static inline bool _check_key(int key) {
   return IsKeyPressed(key) || IsKeyPressedRepeat(key);
 }
 
+typedef struct {
+  char lower;
+  char upper;
+} CharTuple;
+
+// These are printable symbols
+constexpr CharTuple symbol_lookup[] = {
+    [KEY_SPACE] = (CharTuple){' ', ' '},
+
+    [KEY_APOSTROPHE] = (CharTuple){'\'', '"'},
+    [KEY_COMMA] = (CharTuple){',', '<'},
+    [KEY_MINUS] = (CharTuple){'-', '_'},
+    [KEY_PERIOD] = (CharTuple){'.', '>'},
+    [KEY_SLASH] = (CharTuple){'/', '?'},
+    [KEY_ZERO] = (CharTuple){'0', ')'},
+    [KEY_ONE] = (CharTuple){'1', '!'},
+    [KEY_TWO] = (CharTuple){'2', '@'},
+    [KEY_THREE] = (CharTuple){'3', '#'},
+    [KEY_FOUR] = (CharTuple){'4', '$'},
+    [KEY_FIVE] = (CharTuple){'5', '%'},
+    [KEY_SIX] = (CharTuple){'6', '^'},
+    [KEY_SEVEN] = (CharTuple){'7', '&'},
+    [KEY_EIGHT] = (CharTuple){'8', '*'},
+    [KEY_NINE] = (CharTuple){'9', '('},
+    [KEY_SEMICOLON] = (CharTuple){';', ':'},
+    [KEY_EQUAL] = (CharTuple){'=', '+'},
+
+    [KEY_LEFT_BRACKET] = (CharTuple){'[', '{'},
+    [KEY_BACKSLASH] = (CharTuple){'\\', '|'},
+    [KEY_RIGHT_BRACKET] = (CharTuple){']', '}'},
+    [KEY_GRAVE] = (CharTuple){'`', '~'},
+    // TODO: parse this when rendering
+    [KEY_TAB] = (CharTuple){'\t', '\t'},
+};
+
 void update_state(Window win) {
   if (IsKeyDown(KEY_LEFT_SHIFT)) {
     win->kbd_state.left_shift = true;
@@ -27,6 +62,7 @@ void update_state(Window win) {
   if (win->kbd_state.left_shift && IsKeyReleased(KEY_LEFT_SHIFT)) {
     win->kbd_state.left_shift = false;
   }
+  // TODO: delete in favor of lower loop
   for (uint8_t current_key = KEY_A; current_key <= KEY_Z; current_key++) {
     if (_check_key(current_key)) {
       uint8_t ch =
@@ -37,10 +73,19 @@ void update_state(Window win) {
     }
   }
 
-  if (_check_key(KEY_SPACE)) {
-    line_append(win->buffer.current, 1, (uint8_t[]){KEY_SPACE});
-    fputc(' ', stdout);
-    fflush(stdout);
+  size_t lookup_size = sizeof(symbol_lookup) / sizeof(CharTuple);
+  for (unsigned int i = 0; i < lookup_size; i++) {
+    CharTuple tuple = symbol_lookup[i];
+    if (tuple.lower == '\0') {
+      debug("Skipping code 0x%02X\n", i);
+      continue;
+    }
+    if (_check_key(i)) {
+      uint8_t ch = win->kbd_state.left_shift ? tuple.upper : tuple.lower;
+      line_append(win->buffer.current, 1, &ch);
+      fputc(ch, stdout);
+      fflush(stdout);
+    }
   }
 
   if (_check_key(KEY_ENTER)) {
