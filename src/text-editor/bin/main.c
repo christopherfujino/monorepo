@@ -47,6 +47,33 @@ constexpr CharTuple symbol_lookup[] = {
     [KEY_SEMICOLON] = (CharTuple){';', ':'},
     [KEY_EQUAL] = (CharTuple){'=', '+'},
 
+    [KEY_A] = (CharTuple){'a', 'A'},
+    [KEY_B] = (CharTuple){'b', 'B'},
+    [KEY_C] = (CharTuple){'c', 'C'},
+    [KEY_D] = (CharTuple){'d', 'D'},
+    [KEY_E] = (CharTuple){'e', 'E'},
+    [KEY_F] = (CharTuple){'f', 'F'},
+    [KEY_G] = (CharTuple){'g', 'G'},
+    [KEY_H] = (CharTuple){'h', 'H'},
+    [KEY_I] = (CharTuple){'i', 'I'},
+    [KEY_J] = (CharTuple){'j', 'J'},
+    [KEY_K] = (CharTuple){'k', 'K'},
+    [KEY_L] = (CharTuple){'l', 'L'},
+    [KEY_M] = (CharTuple){'m', 'M'},
+    [KEY_N] = (CharTuple){'n', 'N'},
+    [KEY_O] = (CharTuple){'o', 'O'},
+    [KEY_P] = (CharTuple){'p', 'P'},
+    [KEY_Q] = (CharTuple){'q', 'Q'},
+    [KEY_R] = (CharTuple){'r', 'R'},
+    [KEY_S] = (CharTuple){'s', 'S'},
+    [KEY_T] = (CharTuple){'t', 'T'},
+    [KEY_U] = (CharTuple){'u', 'U'},
+    [KEY_V] = (CharTuple){'v', 'V'},
+    [KEY_W] = (CharTuple){'w', 'W'},
+    [KEY_X] = (CharTuple){'x', 'X'},
+    [KEY_Y] = (CharTuple){'y', 'Y'},
+    [KEY_Z] = (CharTuple){'z', 'Z'},
+
     [KEY_LEFT_BRACKET] = (CharTuple){'[', '{'},
     [KEY_BACKSLASH] = (CharTuple){'\\', '|'},
     [KEY_RIGHT_BRACKET] = (CharTuple){']', '}'},
@@ -62,22 +89,10 @@ void update_state(Window win) {
   if (win->kbd_state.left_shift && IsKeyReleased(KEY_LEFT_SHIFT)) {
     win->kbd_state.left_shift = false;
   }
-  // TODO: delete in favor of lower loop
-  for (uint8_t current_key = KEY_A; current_key <= KEY_Z; current_key++) {
-    if (_check_key(current_key)) {
-      uint8_t ch =
-          win->kbd_state.left_shift ? current_key : tolower(current_key);
-      line_append(win->buffer.current, 1, &ch);
-      fputc(ch, stdout);
-      fflush(stdout);
-    }
-  }
-
   size_t lookup_size = sizeof(symbol_lookup) / sizeof(CharTuple);
   for (unsigned int i = 0; i < lookup_size; i++) {
     CharTuple tuple = symbol_lookup[i];
     if (tuple.lower == '\0') {
-      debug("Skipping code 0x%02X\n", i);
       continue;
     }
     if (_check_key(i)) {
